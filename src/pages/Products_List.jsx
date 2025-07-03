@@ -100,7 +100,7 @@ export default function ProductCatalog() {
   const [sortOption, setSortOption] = useState("newest");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
-  const API_BASE_URL = "http://localhost:8000";
+  const API_BASE_URL = "https://paintcompanybackend.onrender.com";
   const token = localStorage.getItem("authToken");
   const PRODUCTS_PER_PAGE = 8;
   const categoryOrder = [

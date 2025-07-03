@@ -11,7 +11,7 @@ const PopularProduct = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
-  const API_BASE_URL = "http://localhost:8000"
+  const API_BASE_URL = "https://paintcompanybackend.onrender.com"
 
   const getImageUrl = (imageUrl) => {
     if (!imageUrl) return lubro

@@ -66,7 +66,7 @@ export default function NewsManager() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [itemIdToDelete, setItemIdToDelete] = useState(null);
 
-  const API_BASE_URL = "http://localhost:8000";
+  const API_BASE_URL = "https://paintcompanybackend.onrender.com";
 
   const getAuthToken = () => {
     return localStorage.getItem("authToken");

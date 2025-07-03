@@ -16,7 +16,7 @@ export default function ContactPage() {
   });
   const [loading, setLoading] = useState(false);
 
-  const API_BASE_URL = "http://localhost:8000";
+  const API_BASE_URL = "https://paintcompanybackend.onrender.com";
 
   useEffect(() => {
     const fetchContactInfo = async () => {

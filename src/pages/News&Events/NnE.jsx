@@ -7,7 +7,7 @@ export default function NewsAndEvents() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const API_BASE_URL = 'http://localhost:8000';
+  const API_BASE_URL = 'https://paintcompanybackend.onrender.com';
 
   useEffect(() => {
     const fetchNewsEvents = async () => {

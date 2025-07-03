@@ -239,7 +239,7 @@ export default function PopularProductManager() {
     rating: 4.0,
     image: null,
   });
-  const API_BASE_URL = "http://localhost:8000";
+  const API_BASE_URL = "https://paintcompanybackend.onrender.com";
 
   const getAuthToken = () => {
     return localStorage.getItem("authToken");

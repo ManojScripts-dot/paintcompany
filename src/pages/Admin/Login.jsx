@@ -43,7 +43,7 @@ export default function Login() {
 
   const navigate = useNavigate()
 
-  const API_BASE_URL = 'http://localhost:8000'
+  const API_BASE_URL = 'https://paintcompanybackend.onrender.com'
 
   const handleSubmit = async (e) => {
     e.preventDefault()

@@ -33,7 +33,7 @@ export default function ContactManager() {
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState(null);
 
-  const API_BASE_URL = "http://localhost:8000";
+  const API_BASE_URL = "https://paintcompanybackend.onrender.com";
 
   const getAuthToken = () => {
     return localStorage.getItem("authToken");
