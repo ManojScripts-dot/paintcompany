@@ -9,10 +9,10 @@ import {
   Mail,
   X, // Import the X icon for the close button
 } from "lucide-react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
+import { useNavigate } from "react-router-dom"; 
 
 const AdminInstructions = () => {
-  const navigate = useNavigate(); // Hook to handle navigation
+  const navigate = useNavigate(); 
 
   // Function to navigate back to the previous screen
   const handleClose = () => {

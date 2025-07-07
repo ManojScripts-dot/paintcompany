@@ -101,7 +101,6 @@ export default function ProductCatalog() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const API_BASE_URL = "https://paintcompanybackend.onrender.com";
-  const token = localStorage.getItem("authToken");
   const PRODUCTS_PER_PAGE = 8;
   const categoryOrder = [
     "Primer",
@@ -217,14 +216,12 @@ export default function ProductCatalog() {
       setIsLoading(true);
       setError("");
       try {
-        const response = await axios.get(`${API_BASE_URL}/admin/products/?limit=100&t=${new Date().getTime()}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await axios.get(`${API_BASE_URL}/api/products/?limit=100&t=${new Date().getTime()}`);
 
         if (response.status === 200) {
-          const allProducts = response.data;
+          const allProducts = Array.isArray(response.data)
+            ? response.data
+            : response.data.items || response.data.results || [];
 
           const categoryMap = {};
           const priceFieldsMap = {
@@ -317,29 +314,14 @@ export default function ProductCatalog() {
           setError("Failed to fetch products");
         }
       } catch (error) {
-        if (error.response) {
-          if (error.response.status === 401) {
-            setError("Unauthorized access. Please log in again.");
-          } else {
-            setError(`Server error: ${error.response.data.detail || "Unknown error"}`);
-          }
-        } else if (error.request) {
-          setError("No response from server. Please check your connection.");
-        } else {
-          setError("An error occurred while fetching products.");
-        }
+        setError("An error occurred while fetching products.");
       } finally {
         setIsLoading(false);
       }
     };
 
-    if (token) {
-      fetchProducts();
-    } else {
-      setError("Please log in to access this page.");
-      setIsLoading(false);
-    }
-  }, [token]);
+    fetchProducts();
+  }, []);
 
   return (
     <div className="bg-gray-50 min-h-screen">
