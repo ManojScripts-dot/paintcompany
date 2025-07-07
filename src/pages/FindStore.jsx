@@ -28,10 +28,10 @@ const LocationPage = () => {
                   <div>
                     <h3 className="font-medium text-gray-800">Address</h3>
                     <p className="text-gray-600">
-                      Corporate Office: Itahari-9, Sunsari, Buspark
+                      Corporate Office: Itahari, Sunsari, Nepal
                     </p>
                     <p className="text-gray-600">
-                      Factory: Duhabi-3, Sunsari,Nepal
+                      Factory: Inaruwa, Sunsari, Nepal
                     </p>
                   </div>
                 </div>
@@ -40,7 +40,7 @@ const LocationPage = () => {
                   <Phone className="w-5 h-5 text-green-500 mt-1 mr-3 flex-shrink-0" />
                   <div>
                     <h3 className="font-medium text-gray-800">Phone</h3>
-                    <p className="text-gray-600"> +977 9852068305</p>
+                    <p className="text-gray-600">+977 9800000000</p>
                   </div>
                 </div>
 
@@ -48,7 +48,7 @@ const LocationPage = () => {
                   <Mail className="w-5 h-5 text-blue-500 mt-1 mr-3 flex-shrink-0" />
                   <div>
                     <h3 className="font-medium text-gray-800">Email</h3>
-                    <p className="text-gray-600">lubropaints@gmail.com</p>
+                    <p className="text-gray-600">paintcompany@gmail.com</p>
                   </div>
                 </div>
 
@@ -74,7 +74,7 @@ const LocationPage = () => {
                   Get Directions
                 </h3>
                 <a
-                  href="https://www.google.com/maps/dir//Itahari-9+buspark/@26.6623731,87.228269,13z?entry=ttu&g_ep=EgoyMDI1MDQwMi4xIKXMDSoJLDEwMjExNjQwSAFQAw%3D%3D"
+                  href="https://www.google.com/maps/dir/?api=1&destination=Sangit+Chowk,Itahari,Nepal"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
@@ -90,14 +90,14 @@ const LocationPage = () => {
             <div className="bg-white rounded-lg shadow-md p-4 h-full">
               <div className="rounded-lg overflow-hidden h-full min-h-[400px]">
                 <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d7131.131741980732!2d87.26431894226344!3d26.662378957188704!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1sItahari-9%20buspark!5e0!3m2!1sen!2snp!4v1744011470750!5m2!1sen!2snp"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d222.8455842086341!2d87.27563313715014!3d26.663547776971367!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39ef6d068e06461f%3A0x3ac4686ad964238d!2z4aSb4aSj4aSY4aSg4aSW4aSlIFNhbmdpdCBDaG93ayDgpLjgpILgpJfgpYDgpKQg4KSa4KWM4KSV!5e0!3m2!1sen!2snp!4v1751882104956!5m2!1sen!2snp"
                   width="100%"
                   height="100%"
                   style={{ border: 0 }}
                   allowFullScreen={true}
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
-                  title="Itahari-9 Buspark Map"
+                  title="Sangit Chowk, Itahari Map"
                   className="w-full h-full"
                 />
               </div>

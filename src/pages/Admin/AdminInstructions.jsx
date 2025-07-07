@@ -7,16 +7,15 @@ import {
   Flame,
   Newspaper,
   Mail,
-  X, // Import the X icon for the close button
+  X, 
 } from "lucide-react";
 import { useNavigate } from "react-router-dom"; 
 
 const AdminInstructions = () => {
   const navigate = useNavigate(); 
 
-  // Function to navigate back to the previous screen
   const handleClose = () => {
-    navigate(-1); // Go back to the previous page
+    navigate(-1); 
   };
 
   return (

@@ -1,75 +1,86 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { useNavigate, useLocation } from "react-router-dom"
-import logo from "../../assets/footer/logo.png"
-import { FaFacebook, FaArrowUp } from "react-icons/fa"
-import { IoLogoWhatsapp } from "react-icons/io"
-import { FaTiktok } from "react-icons/fa6"
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import logo from "../../assets/footer/logo.png";
+import { FaFacebook, FaArrowUp } from "react-icons/fa";
+import { IoLogoWhatsapp } from "react-icons/io";
+import { FaTiktok } from "react-icons/fa6";
 
 const Footer = () => {
-  const navigate = useNavigate()
-  const location = useLocation()
-  const [scrollProgress, setScrollProgress] = useState(0)
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [scrollProgress, setScrollProgress] = useState(0);
 
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" })
-  }
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   const handleNavigation = (section) => {
     if (location.pathname !== "/") {
-      navigate("/")
+      navigate("/");
       setTimeout(() => {
-        const element = document.getElementById(section)
+        const element = document.getElementById(section);
         if (element) {
-          element.scrollIntoView({ behavior: "smooth", block: "start" })
+          element.scrollIntoView({ behavior: "smooth", block: "start" });
         }
-      }, 100)
+      }, 100);
     } else {
-      const element = document.getElementById(section)
+      const element = document.getElementById(section);
       if (element) {
-        element.scrollIntoView({ behavior: "smooth", block: "start" })
+        element.scrollIntoView({ behavior: "smooth", block: "start" });
       }
     }
-  }
+  };
 
   const navigateToFindStore = () => {
-    navigate("/find-store")
-    window.scrollTo({ top: 0, behavior: "smooth" })
-  }
+    navigate("/find-store");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   useEffect(() => {
     const handleScroll = () => {
-      const totalScroll = document.documentElement.scrollHeight - window.innerHeight
-      const currentScroll = window.scrollY
+      const totalScroll =
+        document.documentElement.scrollHeight - window.innerHeight;
+      const currentScroll = window.scrollY;
       if (totalScroll) {
-        const percentage = (currentScroll / totalScroll) * 100
-        setScrollProgress(percentage)
+        const percentage = (currentScroll / totalScroll) * 100;
+        setScrollProgress(percentage);
       }
-    }
+    };
 
-    window.addEventListener("scroll", handleScroll)
-    handleScroll()
+    window.addEventListener("scroll", handleScroll);
+    handleScroll();
 
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
-  const radius = 40
-  const circumference = 2 * Math.PI * radius
-  const dashOffset = circumference - (scrollProgress / 100) * circumference
+  const radius = 40;
+  const circumference = 2 * Math.PI * radius;
+  const dashOffset = circumference - (scrollProgress / 100) * circumference;
 
   const getProgressColor = (progress) => {
-    if (progress <= 33) return "#22c55e"
-    if (progress <= 66) return "#eab308"
-    return "#ef4444"
-  }
+    if (progress <= 33) return "#22c55e";
+    if (progress <= 66) return "#eab308";
+    return "#ef4444";
+  };
 
   return (
     <>
       <div className="fixed bottom-4 sm:bottom-6 right-4 sm:right-6 z-50">
-        <div className="relative h-[50px] w-[50px] sm:h-[60px] sm:w-[60px] cursor-pointer" onClick={scrollToTop}>
+        <div
+          className="relative h-[50px] w-[50px] sm:h-[60px] sm:w-[60px] cursor-pointer"
+          onClick={scrollToTop}
+        >
           <svg className="h-full w-full" viewBox="0 0 100 100">
-            <circle cx="50" cy="50" r={radius} fill="none" stroke="#e5e7eb" strokeWidth="8" />
+            <circle
+              cx="50"
+              cy="50"
+              r={radius}
+              fill="none"
+              stroke="#e5e7eb"
+              strokeWidth="8"
+            />
             <circle
               cx="50"
               cy="50"
@@ -91,9 +102,7 @@ const Footer = () => {
         </div>
       </div>
 
-      <footer
-        className="w-full bg-cover bg-center bg-no-repeat text-black min-h-[250px] xs:min-h-[280px] sm:min-h-[320px] md:min-h-[360px] lg:min-h-[400px]"
-      >
+      <footer className="w-full bg-cover bg-center bg-no-repeat text-black min-h-[250px] xs:min-h-[280px] sm:min-h-[320px] md:min-h-[360px] lg:min-h-[400px]">
         <div className="container mx-auto px-4 xs:px-4 sm:px-6 md:px-8 lg:px-10 py-6 xs:py-8 sm:py-10 md:py-12 lg:py-14">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 xs:gap-6 sm:gap-8 md:gap-10 lg:gap-12">
             <div className="flex items-center justify-center sm:justify-start px-2">
@@ -155,9 +164,21 @@ const Footer = () => {
               </h3>
               <div className="flex flex-row lg:flex-col justify-center sm:justify-start space-x-3 xs:space-x-4 lg:space-x-0 lg:space-y-3">
                 {[
-                  { href: "https://www.facebook.com/share/1DYMKearRj/", Icon: FaFacebook, label: "Facebook" },
-                  { href: "https://www.tiktok.com/@lubropaints", Icon: FaTiktok, label: "TikTok" },
-                  { href: "https://Wa.me/+9779852048304", Icon: IoLogoWhatsapp, label: "Whatsapp" },
+                  {
+                    href: "https://www.facebook.com/",
+                    Icon: FaFacebook,
+                    label: "Facebook",
+                  },
+                  {
+                    href: "https://www.tiktok.com/",
+                    Icon: FaTiktok,
+                    label: "TikTok",
+                  },
+                  {
+                    href: "https://Wa.me/+9779800000000",
+                    Icon: IoLogoWhatsapp,
+                    label: "Whatsapp",
+                  },
                 ].map((social, index) => (
                   <a
                     key={index}
@@ -177,20 +198,23 @@ const Footer = () => {
           </div>
           <div className="w-full bg-transparent border-b-2 border-purple-900 mt-6 xs:mt-8 sm:mt-10 md:mt-12 mb-3 xs:mb-4 sm:mb-6"></div>
           <div className="text-center text-xs xs:text-sm sm:text-base md:text-lg">
-          <p>
-  Copyright © 2025 Lubro Paints. All Rights Reserved. Designed By:
-  <span className="text-popRed underline underline-offset-4 ml-2">
-    <a href="https://bardali.com.np/" target="_blank" rel="noopener noreferrer">
-      Bardali Creations
-    </a>
-  </span>
-</p>
-
+            <p>
+              Copyright © 2025 Paint Company. All Rights Reserved. Designed By:
+              <span className="text-popRed underline underline-offset-4 ml-2">
+                <a
+                  href="https://shresthamanoj.info.np/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  MARSSL
+                </a>
+              </span>
+            </p>
           </div>
         </div>
       </footer>
     </>
-  )
-}
+  );
+};
 
-export default Footer
+export default Footer;

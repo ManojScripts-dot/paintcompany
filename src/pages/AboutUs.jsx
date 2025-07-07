@@ -58,7 +58,7 @@ export default function AboutUs() {
     return () => clearInterval(timer)
   }
 
-  const paragraph = `Based in Itahari, Sunsari, Lubro Paints has been a trusted name in Nepal's paint industry for over 7 years, offering durable and eco-friendly paint solutions for homes, businesses, and industries. With a focus on innovation, sustainability, and customer satisfaction, we provide vibrant colors and quality finishes that protect and enhance every space. Backed by a strong local presence and a growing distribution network, Lubro Paints is committed to helping you transform your world with color and confidence.`
+  const paragraph = `Based in Itahari, Sunsari, Paint Company has been a trusted name in Nepal's paint industry for over 7 years, offering durable and eco-friendly paint solutions for homes, businesses, and industries. With a focus on innovation, sustainability, and customer satisfaction, we provide vibrant colors and quality finishes that protect and enhance every space. Backed by a strong local presence and a growing distribution network, Paint Company is committed to helping you transform your world with color and confidence.`
 
   return (
     <div className="relative h-[90%] w-full overflow-hidden">
@@ -76,7 +76,7 @@ export default function AboutUs() {
               <div className="absolute inset-0 flex items-center p-4 sm:p-6 md:p-8">
                 <div className="text-left">
                   <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">
-                    <span className="text-popRed">"Lubro Paints:</span> <br />
+                    <span className="text-popRed">" Paint Company:</span> <br />
                     <span className="text-white">
                       &nbsp;&nbsp;Bringing <br />
                       &nbsp;&nbsp;Your World to Life with Color"

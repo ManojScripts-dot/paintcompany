@@ -116,7 +116,7 @@ function PaintCategory() {
                 </div>
                 <div className="text-center">
                   <p className="text-gray-800 mb-4 max-w-xl mx-auto leading-relaxed font-bold text-sm md:text-base">
-                    Explore Lubro Paints' premium range of paints and coatings—designed for lasting durability and stunning aesthetics. Discover the perfect color solution for your home, business, or project.
+                    Explore Paint Company's premium range of paints and coatings—designed for lasting durability and stunning aesthetics. Discover the perfect color solution for your home, business, or project.
                   </p>
                   <Link
                     to="/products"
