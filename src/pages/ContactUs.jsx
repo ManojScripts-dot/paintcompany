@@ -10,9 +10,9 @@ export default function ContactPage() {
   });
   const [submitStatus, setSubmitStatus] = useState(null);
   const [contactInfo, setContactInfo] = useState({
-    email: "digitalpaints@gmail.com",
-    phone: "98000001232",
-    address: "Itahari-6, Sunsari",
+    email: "paintcompany@gmail.com",
+    phone: "9800000000",
+    address: "Itahari, Sunsari",
   });
   const [loading, setLoading] = useState(false);
 

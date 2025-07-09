@@ -12,21 +12,21 @@ const testimonials = [
     id: 1,
     name: "Ramesh Tamang",
     image: rameshImage,
-    text: "Lubro Paints completely transformed our home! The colors are rich, long-lasting, and exactly what we imagined.",
+    text: "Paint Company completely transformed our home! The colors are rich, long-lasting, and exactly what we imagined.",
     rating: 4.5,
   },
   {
     id: 2,
     name: "Sunita Karki",
     image: sunitaImage,
-    text: "We've been using Lubro Paints for our projects for years. Reliable quality, great coverage, and eco-friendly too!",
+    text: "We've been using Paint Company for our projects for years. Reliable quality, great coverage, and eco-friendly too!",
     rating: 4.0,
   },
   {
     id: 3,
     name: "Dipesh Shrestha",
     image: dipeshImage,
-    text: "Loved the smooth finish and wide color selection. Lubro Paints made our house feel like a home.",
+    text: "Loved the smooth finish and wide color selection. Paint Company made our house feel like a home.",
     rating: 5.0,
   },
   {
@@ -40,7 +40,7 @@ const testimonials = [
     id: 5,
     name: "Sabina Rai",
     image: sabinaImage,
-    text: "Affordable, durable, and beautiful—Lubro Paints delivered beyond our expectations.",
+    text: "Affordable, durable, and beautiful—Paint Company delivered beyond our expectations.",
     rating: 4.8,
   },
 ]
