@@ -246,8 +246,10 @@ export default function PopularProductManager() {
   };
 
   const getHeaders = (isFormData = false) => {
+    const token = getAuthToken();
+    console.log("Auth token:", token); // Log token for debugging
     const headers = {
-      Authorization: `Bearer ${getAuthToken()}`,
+      Authorization: `Bearer ${token}`,
     };
     if (!isFormData) {
       headers["Content-Type"] = "application/json";
@@ -276,10 +278,8 @@ export default function PopularProductManager() {
   const fetchProducts = async () => {
     setIsLoading(true);
     setError(null);
-
     try {
       const response = await axios.get(`${API_BASE_URL}/admin/popular-products`, getHeaders());
-
       let fetchedProducts = [];
       if (response.data && Array.isArray(response.data)) {
         fetchedProducts = response.data.map((product) => ({
@@ -302,9 +302,14 @@ export default function PopularProductManager() {
           image: getImageUrl(product.image_url),
         }));
       }
+      console.log("Fetched products:", fetchedProducts); // Log products for debugging
       setProducts(fetchedProducts);
     } catch (err) {
-      console.error("Error fetching products:", err);
+      console.error("Error fetching products:", {
+        status: err.response?.status,
+        data: err.response?.data,
+        message: err.message
+      });
       setError("Failed to load products. Please check if the server is running and try again.");
     } finally {
       setIsLoading(false);
@@ -427,8 +432,13 @@ export default function PopularProductManager() {
         setFeaturesInput("");
         setImagePreview(null);
         setIsSaveModalOpen(true);
+        await fetchProducts(); // Refresh product list
       } catch (err) {
-        console.error("Error creating product:", err);
+        console.error("Error creating product:", {
+          status: err.response?.status,
+          data: err.response?.data,
+          message: err.message
+        });
         setError(err.response?.data?.detail || "Failed to create product. Please try again.");
       } finally {
         setIsLoading(false);
@@ -471,13 +481,12 @@ export default function PopularProductManager() {
           formData.append("image", newProduct.image);
         }
 
-        // Log request details for debugging
         console.log("Updating product with ID:", editingId);
         console.log("Request URL:", `${API_BASE_URL}/admin/popular-products/${editingId}/`);
         console.log("FormData:", [...formData.entries()]);
 
         const response = await axios.put(
-          `${API_BASE_URL}/admin/popular-products/${editingId}/`, // Fixed endpoint with product ID
+          `${API_BASE_URL}/admin/popular-products/${editingId}/`,
           formData,
           getHeaders(true)
         );
@@ -507,8 +516,13 @@ export default function PopularProductManager() {
         setFeaturesInput("");
         setImagePreview(null);
         setIsSaveModalOpen(true);
+        await fetchProducts(); // Refresh product list
       } catch (err) {
-        console.error("Error updating product:", err);
+        console.error("Error updating product:", {
+          status: err.response?.status,
+          data: err.response?.data,
+          message: err.message
+        });
         setError(err.response?.data?.detail || "Failed to update product. Please try again.");
       } finally {
         setIsLoading(false);
@@ -517,7 +531,8 @@ export default function PopularProductManager() {
   };
 
   const handleOpenDeleteModal = (id) => {
-    setProductIdToDelete(id);
+    const cleanId = Number(String(id).split(':')[0]); // Clean ID
+    setProductIdToDelete(cleanId);
     setIsDeleteModalOpen(true);
   };
 
@@ -539,198 +554,206 @@ export default function PopularProductManager() {
   };
 
   const handleDelete = async (id) => {
+    const cleanId = Number(String(id).split(':')[0]); // Clean ID
+    const url = `${API_BASE_URL}/admin/popular-products/${cleanId}`;
+    console.log("Deleting product with ID:", cleanId, "URL:", url); // Log for debugging
     setIsLoading(true);
     setError(null);
     try {
-      await axios.delete(`${API_BASE_URL}/admin/popular-products/${id}`, getHeaders());
-      setProducts(products.filter((item) => item.id !== id));
+      await axios.delete(url, getHeaders());
+      setProducts(products.filter((item) => item.id !== cleanId));
     } catch (err) {
-        console.error("Error deleting product:", err);
-        setError("Failed to delete product. Please try again.");
+      console.error("Delete error:", {
+        status: err.response?.status,
+        data: err.response?.data,
+        message: err.message,
+        url: url
+      });
+      setError(err.response?.data?.detail || "Failed to delete product. Please try again.");
     } finally {
-        setIsLoading(false);
+      setIsLoading(false);
     }
-};
+  };
 
-const handleCancel = () => {
+  const handleCancel = () => {
     setIsAddingNew(false);
     setEditingId(null);
     setNewProduct({
-        name: "",
-        type: "",
-        description: "",
-        features: [],
-        rating: 4.0,
-        image: null,
+      name: "",
+      type: "",
+      description: "",
+      features: [],
+      rating: 4.0,
+      image: null,
     });
     setFeaturesInput("");
     setImagePreview(null);
     setError(null);
-};
+  };
 
-return (
+  return (
     <div className="space-y-6">
-        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-0">
-            <h1 className="text-2xl font-bold text-gray-800">Popular Products Manager</h1>
-            <div className="flex space-x-2">
-                {!isLoading && !isAddingNew && editingId === null && (
-                    <button
-                        onClick={fetchProducts}
-                        className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors flex items-center"
-                    >
-                        <RefreshCw size={16} className="mr-1" /> Refresh
-                    </button>
-                )}
-                <button
-                    onClick={handleAddNew}
-                    disabled={isAddingNew || editingId !== null}
-                    className="px-4 py-2 bg-popRed text-white rounded-md hover:bg-red-600 transition-colors flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                    <Plus size={16} className="mr-1" /> Add Popular Product
-                </button>
-            </div>
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-0">
+        <h1 className="text-2xl font-bold text-gray-800">Popular Products Manager</h1>
+        <div className="flex space-x-2">
+          {!isLoading && !isAddingNew && editingId === null && (
+            <button
+              onClick={fetchProducts}
+              className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors flex items-center"
+            >
+              <RefreshCw size={16} className="mr-1" /> Refresh
+            </button>
+          )}
+          <button
+            onClick={handleAddNew}
+            disabled={isAddingNew || editingId !== null}
+            className="px-4 py-2 bg-popRed text-white rounded-md hover:bg-red-600 transition-colors flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <Plus size={16} className="mr-1" /> Add Popular Product
+          </button>
         </div>
-        {error && !isAddingNew && editingId === null && (
-            <div className="p-4 bg-red-100 border border-red-400 text-red-700 rounded flex items-center">
-                <AlertTriangle className="h-5 w-5 mr-2" />
-                <span>{error}</span>
-                <button
-                    onClick={fetchProducts}
-                    className="ml-auto px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 flex items-center"
-                >
-                    <RefreshCw size={14} className="mr-1" /> Retry
-                </button>
-            </div>
-        )}
-        {isAddingNew && (
-            <ProductForm
+      </div>
+      {error && !isAddingNew && editingId === null && (
+        <div className="p-4 bg-red-100 border border-red-400 text-red-700 rounded flex items-center">
+          <AlertTriangle className="h-5 w-5 mr-2" />
+          <span>{error}</span>
+          <button
+            onClick={fetchProducts}
+            className="ml-auto px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 flex items-center"
+          >
+            <RefreshCw size={14} className="mr-1" /> Retry
+          </button>
+        </div>
+      )}
+      {isAddingNew && (
+        <ProductForm
+          product={newProduct}
+          onInputChange={handleInputChange}
+          onImageChange={handleImageChange}
+          onFeatureInputChange={handleFeatureInputChange}
+          onSave={handleSaveNew}
+          onCancel={handleCancel}
+          isNew={true}
+          preview={imagePreview}
+          error={error}
+          setImagePreview={setImagePreview}
+          featuresInput={featuresInput}
+          setFeaturesInput={setFeaturesInput}
+        />
+      )}
+      {isLoading && !isAddingNew && editingId === null ? (
+        <div className="flex justify-center items-center py-12">
+          <RefreshCw className="h-8 w-8 text-popPurple animate-spin" />
+          <span className="ml-2 text-gray-600">Loading popular products...</span>
+        </div>
+      ) : products.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {products.map((product) =>
+            editingId === product.id ? (
+              <ProductForm
+                key={product.id}
                 product={newProduct}
                 onInputChange={handleInputChange}
                 onImageChange={handleImageChange}
                 onFeatureInputChange={handleFeatureInputChange}
-                onSave={handleSaveNew}
+                onSave={handleSaveEdit}
                 onCancel={handleCancel}
-                isNew={true}
                 preview={imagePreview}
                 error={error}
                 setImagePreview={setImagePreview}
                 featuresInput={featuresInput}
                 setFeaturesInput={setFeaturesInput}
-            />
-        )}
-        {isLoading && !isAddingNew && editingId === null ? (
-            <div className="flex justify-center items-center py-12">
-                <RefreshCw className="h-8 w-8 text-popPurple animate-spin" />
-                <span className="ml-2 text-gray-600">Loading popular products...</span>
-            </div>
-        ) : products.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {products.map((product) =>
-                    editingId === product.id ? (
-                        <ProductForm
-                            key={product.id}
-                            product={newProduct}
-                            onInputChange={handleInputChange}
-                            onImageChange={handleImageChange}
-                            onFeatureInputChange={handleFeatureInputChange}
-                            onSave={handleSaveEdit}
-                            onCancel={handleCancel}
-                            preview={imagePreview}
-                            error={error}
-                            setImagePreview={setImagePreview}
-                            featuresInput={featuresInput}
-                            setFeaturesInput={setFeaturesInput}
-                        />
-                    ) : (
-                        <div key={product.id} className="bg-white rounded-lg shadow overflow-hidden">
-                            <div className="flex flex-col md:flex-row">
-                                <div className="md:w-1/3 p-4">
-                                    <img
-                                        src={product.image || "/placeholder.svg"}
-                                        alt={product.name}
-                                        className="w-full h-auto object-cover rounded-md"
-                                        onError={(e) => {
-                                            console.log("Image failed to load:", product.image);
-                                            e.target.src = "/placeholder.svg";
-                                        }}
-                                    />
-                                </div>
-                                <div className="md:w-2/3 p-6">
-                                    <div className="flex justify-between items-start">
-                                        <div>
-                                            <h2 className="text-xl font-semibold text-gray-800">{product.name}</h2>
-                                            <p className="text-gray-600 text-sm">{product.type}</p>
-                                        </div>
-                                        <div className="flex items-center">
-                                            <Star className="h-5 w-5 text-yellow-400 mr-1" />
-                                            <span className="font-medium">{parseFloat(product.rating).toFixed(1)}/5</span>
-                                        </div>
-                                    </div>
-                                    <p className="text-gray-700 mt-2">{product.description}</p>
-                                    <div className="mt-4">
-                                        <h3 className="text-sm font-medium text-gray-700">Features:</h3>
-                                        <div className="flex flex-wrap gap-2 mt-1">
-                                            {product.features.map((feature, index) => (
-                                                <span
-                                                    key={index}
-                                                    className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800"
-                                                >
-                                                    {feature}
-                                                </span>
-                                            ))}
-                                        </div>
-                                    </div>
-                                    <div className="mt-4 flex justify-end space-x-2">
-                                        <button
-                                            onClick={() => handleEdit(product.id)}
-                                            className="text-gray-600 hover:text-gray-900"
-                                            title="Edit"
-                                        >
-                                            <Edit2 className="h-5 w-5" />
-                                        </button>
-                                        <button
-                                            onClick={() => handleOpenDeleteModal(product.id)}
-                                            className="text-red-600 hover:text-red-900"
-                                            title="Delete"
-                                        >
-                                            <Trash2 className="h-5 w-5" />
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    )
-                )}
-            </div>
-        ) : (
-            <div className="bg-white rounded-lg shadow p-12 text-center">
-                <Star className="h-12 w-12 text-yellow-400 mx-auto" />
-                <h3 className="mt-2 text-lg font-medium text-gray-900">No popular products</h3>
-                <p className="mt-1 text-gray-500">Get started by adding a popular product.</p>
-                <div className="mt-6">
-                    <button
-                        onClick={handleAddNew}
-                        className="px-4 py-2 bg-popRed text-white rounded-md hover:bg-red-600 transition-colors inline-flex items-center"
-                    >
-                        <Plus size={16} className="mr-1" /> Add Popular Product
-                    </button>
+              />
+            ) : (
+              <div key={product.id} className="bg-white rounded-lg shadow overflow-hidden">
+                <div className="flex flex-col md:flex-row">
+                  <div className="md:w-1/3 p-4">
+                    <img
+                      src={product.image || "/placeholder.svg"}
+                      alt={product.name}
+                      className="w-full h-auto object-cover rounded-md"
+                      onError={(e) => {
+                        console.log("Image failed to load:", product.image);
+                        e.target.src = "/placeholder.svg";
+                      }}
+                    />
+                  </div>
+                  <div className="md:w-2/3 p-6">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h2 className="text-xl font-semibold text-gray-800">{product.name}</h2>
+                        <p className="text-gray-600 text-sm">{product.type}</p>
+                      </div>
+                      <div className="flex items-center">
+                        <Star className="h-5 w-5 text-yellow-400 mr-1" />
+                        <span className="font-medium">{parseFloat(product.rating).toFixed(1)}/5</span>
+                      </div>
+                    </div>
+                    <p className="text-gray-700 mt-2">{product.description}</p>
+                    <div className="mt-4">
+                      <h3 className="text-sm font-medium text-gray-700">Features:</h3>
+                      <div className="flex flex-wrap gap-2 mt-1">
+                        {product.features.map((feature, index) => (
+                          <span
+                            key={index}
+                            className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800"
+                          >
+                            {feature}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="mt-4 flex justify-end space-x-2">
+                      <button
+                        onClick={() => handleEdit(product.id)}
+                        className="text-gray-600 hover:text-gray-900"
+                        title="Edit"
+                      >
+                        <Edit2 className="h-5 w-5" />
+                      </button>
+                      <button
+                        onClick={() => handleOpenDeleteModal(Number(product.id))} // Ensure clean ID
+                        className="text-red-600 hover:text-red-900"
+                        title="Delete"
+                      >
+                        <Trash2 className="h-5 w-5" />
+                      </button>
+                    </div>
+                  </div>
                 </div>
-            </div>
-        )}
-        <DeleteModal
-            isOpen={isDeleteModalOpen}
-            onConfirm={handleConfirmDelete}
-            onCancel={handleCancelDelete}
-        />
-        <SaveModal
-            isOpen={isSaveModalOpen}
-            onClose={handleCloseSaveModal}
-        />
-        <ConfirmModal
-            isOpen={isConfirmModalOpen}
-            onConfirm={handleConfirmSave}
-            onCancel={handleCancelConfirm}
-        />
+              </div>
+            )
+          )}
+        </div>
+      ) : (
+        <div className="bg-white rounded-lg shadow p-12 text-center">
+          <Star className="h-12 w-12 text-yellow-400 mx-auto" />
+          <h3 className="mt-2 text-lg font-medium text-gray-900">No popular products</h3>
+          <p className="mt-1 text-gray-500">Get started by adding a popular product.</p>
+          <div className="mt-6">
+            <button
+              onClick={handleAddNew}
+              className="px-4 py-2 bg-popRed text-white rounded-md hover:bg-red-600 transition-colors inline-flex items-center"
+            >
+              <Plus size={16} className="mr-1" /> Add Popular Product
+            </button>
+          </div>
+        </div>
+      )}
+      <DeleteModal
+        isOpen={isDeleteModalOpen}
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
+      />
+      <SaveModal
+        isOpen={isSaveModalOpen}
+        onClose={handleCloseSaveModal}
+      />
+      <ConfirmModal
+        isOpen={isConfirmModalOpen}
+        onConfirm={handleConfirmSave}
+        onCancel={handleCancelConfirm}
+      />
     </div>
-);
+  );
 }
