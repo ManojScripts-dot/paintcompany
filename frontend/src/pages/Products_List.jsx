@@ -145,11 +145,12 @@ export default function ProductCatalog() {
         { display: "20L", field: "price20l" }
       ],
       "Aluminium Paints": [
-        { display: "20L", field: "price20l" },
-        { display: "4L", field: "price4l" },
-        { display: "1L", field: "price1l" },
+        { display: "200ml", field: "price200ml" },
         { display: "500ml", field: "price500ml" },
-        { display: "200ml", field: "price200ml" }
+        { display: "1L", field: "price1l" },
+        { display: "4L", field: "price4l" },
+        { display: "20L", field: "price20l" }
+
       ],
       "Distemper": [
         { display: "1L", field: "price1l" },
