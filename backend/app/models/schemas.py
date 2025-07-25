@@ -156,11 +156,11 @@ class ProductBase(BaseModel):
 
 class ProductCreate(ProductBase):
     # Price fields are optional strings to support currency formatting
-    price1L: Optional[str] = None
-    price4L: Optional[str] = None
-    price5L: Optional[str] = None
-    price10L: Optional[str] = None
-    price20L: Optional[str] = None
+    price1l: Optional[str] = None
+    price4l: Optional[str] = None
+    price5l: Optional[str] = None
+    price10l: Optional[str] = None
+    price20l: Optional[str] = None
     price500ml: Optional[str] = None
     price200ml: Optional[str] = None
     price1kg: Optional[str] = None
@@ -168,8 +168,7 @@ class ProductCreate(ProductBase):
     price200g: Optional[str] = None
     price100g: Optional[str] = None
     price50g: Optional[str] = None
-    image_url: str  # Changed to required field
-    image_url: str  # Changed to required field
+    image_url: str  # Required field
 
 class ProductUpdate(BaseModel):
     name: Optional[str] = None
@@ -177,11 +176,11 @@ class ProductUpdate(BaseModel):
     description: Optional[str] = None
     features: Optional[List[str]] = None
     stock: Optional[str] = None
-    price1L: Optional[str] = None
-    price4L: Optional[str] = None
-    price5L: Optional[str] = None
-    price10L: Optional[str] = None
-    price20L: Optional[str] = None
+    price1l: Optional[str] = None
+    price4l: Optional[str] = None
+    price5l: Optional[str] = None
+    price10l: Optional[str] = None
+    price20l: Optional[str] = None
     price500ml: Optional[str] = None
     price200ml: Optional[str] = None
     price1kg: Optional[str] = None
@@ -190,17 +189,15 @@ class ProductUpdate(BaseModel):
     price100g: Optional[str] = None
     price50g: Optional[str] = None
     image_url: Optional[str] = None
-    image_url: Optional[str] = None
 
 class Product(ProductBase):
     id: int
-    image_url: str  # Changed from Optional[str] = None to required field
-    image_url: str  # Changed from Optional[str] = None to required field
-    price1L: Optional[str] = None
-    price4L: Optional[str] = None
-    price5L: Optional[str] = None
-    price10L: Optional[str] = None
-    price20L: Optional[str] = None
+    image_url: str  # Required field
+    price1l: Optional[str] = None
+    price4l: Optional[str] = None
+    price5l: Optional[str] = None
+    price10l: Optional[str] = None
+    price20l: Optional[str] = None
     price500ml: Optional[str] = None
     price200ml: Optional[str] = None
     price1kg: Optional[str] = None

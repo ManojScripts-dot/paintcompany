@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Plus, Edit2, Trash2, Search, Filter, RefreshCw, Layers, AlertTriangle } from "lucide-react";
 import axios from "axios";
-import PropTypes from "prop-types"; // Add PropTypes import
+import PropTypes from "prop-types";
 import DeleteModal from "../../components/DeleteModal";
 import SaveModal from "../../components/SaveModal";
 import ConfirmModal from "../../components/ConfirmModal";
@@ -36,25 +36,25 @@ const ProductForm = ({
       ];
     } else if (["Metal and Wood Primer", "Metal and Wood Enamel", "Aluminium Paints"].includes(category)) {
       return [
-        { id: "price20L", label: "Price (20 Ltr)", placeholder: "e.g. Rs. 8,500" },
-        { id: "price4L", label: "Price (4 Ltr)", placeholder: "e.g. Rs. 1,800" },
-        { id: "price1L", label: "Price (1 Ltr)", placeholder: "e.g. Rs. 500" },
+        { id: "price20l", label: "Price (20 Ltr)", placeholder: "e.g. Rs. 8,500" },
+        { id: "price4l", label: "Price (4 Ltr)", placeholder: "e.g. Rs. 1,800" },
+        { id: "price1l", label: "Price (1 Ltr)", placeholder: "e.g. Rs. 500" },
         { id: "price500ml", label: "Price (500 ml)", placeholder: "e.g. Rs. 300" },
         { id: "price200ml", label: "Price (200 ml)", placeholder: "e.g. Rs. 150" },
       ];
     } else if (category === "Distemper") {
       return [
-        { id: "price1L", label: "Price (1 Ltr)", placeholder: "e.g. Rs. 500" },
-        { id: "price5L", label: "Price (5 Ltr)", placeholder: "e.g. Rs. 1,800" },
-        { id: "price10L", label: "Price (10 Ltr)", placeholder: "e.g. Rs. 4,500" },
-        { id: "price20L", label: "Price (20 Ltr)", placeholder: "e.g. Rs. 8,500" },
+        { id: "price1l", label: "Price (1 Ltr)", placeholder: "e.g. Rs. 500" },
+        { id: "price5l", label: "Price (5 Ltr)", placeholder: "e.g. Rs. 1,800" },
+        { id: "price10l", label: "Price (10 Ltr)", placeholder: "e.g. Rs. 4,500" },
+        { id: "price20l", label: "Price (20 Ltr)", placeholder: "e.g. Rs. 8,500" },
       ];
     } else {
       return [
-        { id: "price1L", label: "Price (1 Ltr)", placeholder: "e.g. Rs. 500" },
-        { id: "price4L", label: "Price (4 Ltr)", placeholder: "e.g. Rs. 1,800" },
-        { id: "price10L", label: "Price (10 Ltr)", placeholder: "e.g. Rs. 4,500" },
-        { id: "price20L", label: "Price (20 Ltr)", placeholder: "e.g. Rs. 8,500" },
+        { id: "price1l", label: "Price (1 Ltr)", placeholder: "e.g. Rs. 500" },
+        { id: "price4l", label: "Price (4 Ltr)", placeholder: "e.g. Rs. 1,800" },
+        { id: "price10l", label: "Price (10 Ltr)", placeholder: "e.g. Rs. 4,500" },
+        { id: "price20l", label: "Price (20 Ltr)", placeholder: "e.g. Rs. 8,500" },
       ];
     }
   };
@@ -265,11 +265,11 @@ ProductForm.propTypes = {
     category: PropTypes.string.isRequired,
     description: PropTypes.string,
     features: PropTypes.arrayOf(PropTypes.string),
-    price1L: PropTypes.string,
-    price4L: PropTypes.string,
-    price5L: PropTypes.string,
-    price10L: PropTypes.string,
-    price20L: PropTypes.string,
+    price1l: PropTypes.string,
+    price4l: PropTypes.string,
+    price5l: PropTypes.string,
+    price10l: PropTypes.string,
+    price20l: PropTypes.string,
     price500ml: PropTypes.string,
     price200ml: PropTypes.string,
     price1kg: PropTypes.string,
@@ -277,9 +277,6 @@ ProductForm.propTypes = {
     price200g: PropTypes.string,
     price100g: PropTypes.string,
     price50g: PropTypes.string,
-    price5kg: PropTypes.string,
-    price10kg: PropTypes.string,
-    price20kg: PropTypes.string,
     stock: PropTypes.string,
     image: PropTypes.any,
     image_url: PropTypes.string,
@@ -321,11 +318,11 @@ export default function ProductsManager() {
     category: "",
     description: "",
     features: [],
-    price1L: "",
-    price4L: "",
-    price5L: "",
-    price10L: "",
-    price20L: "",
+    price1l: "",
+    price4l: "",
+    price5l: "",
+    price10l: "",
+    price20l: "",
     price500ml: "",
     price200ml: "",
     price1kg: "",
@@ -333,9 +330,6 @@ export default function ProductsManager() {
     price200g: "",
     price100g: "",
     price50g: "",
-    price5kg: "",
-    price10kg: "",
-    price20kg: "",
     stock: "In Stock",
     image: null,
     image_url: "",
@@ -437,7 +431,6 @@ export default function ProductsManager() {
     let results = products;
 
     if (filterCategory !== "all") {
-
       results = results.filter((product) => product.category.toLowerCase() === filterCategory.toLowerCase());
     }
 
@@ -462,11 +455,11 @@ export default function ProductsManager() {
       category: "",
       description: "",
       features: [],
-      price1L: "",
-      price4L: "",
-      price5L: "",
-      price10L: "",
-      price20L: "",
+      price1l: "",
+      price4l: "",
+      price5l: "",
+      price10l: "",
+      price20l: "",
       price500ml: "",
       price200ml: "",
       price1kg: "",
@@ -474,9 +467,6 @@ export default function ProductsManager() {
       price200g: "",
       price100g: "",
       price50g: "",
-      price5kg: "",
-      price10kg: "",
-      price20kg: "",
       stock: "In Stock",
       image: null,
       image_url: "",
@@ -544,11 +534,11 @@ export default function ProductsManager() {
         formData.append("category", newProduct.category);
         formData.append("description", newProduct.description || "");
         formData.append("features", JSON.stringify(newProduct.features));
-        formData.append("price1L", newProduct.price1L || "");
-        formData.append("price4L", newProduct.price4L || "");
-        formData.append("price5L", newProduct.price5L || "");
-        formData.append("price10L", newProduct.price10L || "");
-        formData.append("price20L", newProduct.price20L || "");
+        formData.append("price1l", newProduct.price1l || "");
+        formData.append("price4l", newProduct.price4l || "");
+        formData.append("price5l", newProduct.price5l || "");
+        formData.append("price10l", newProduct.price10l || "");
+        formData.append("price20l", newProduct.price20l || "");
         formData.append("price500ml", newProduct.price500ml || "");
         formData.append("price200ml", newProduct.price200ml || "");
         formData.append("price1kg", newProduct.price1kg || "");
@@ -556,9 +546,6 @@ export default function ProductsManager() {
         formData.append("price200g", newProduct.price200g || "");
         formData.append("price100g", newProduct.price100g || "");
         formData.append("price50g", newProduct.price50g || "");
-        formData.append("price5kg", newProduct.price5kg || "");
-        formData.append("price10kg", newProduct.price10kg || "");
-        formData.append("price20kg", newProduct.price20kg || "");
         formData.append("stock", newProduct.stock);
         if (newProduct.image) {
           formData.append("image", newProduct.image);
@@ -585,11 +572,11 @@ export default function ProductsManager() {
             category: "",
             description: "",
             features: [],
-            price1L: "",
-            price4L: "",
-            price5L: "",
-            price10L: "",
-            price20L: "",
+            price1l: "",
+            price4l: "",
+            price5l: "",
+            price10l: "",
+            price20l: "",
             price500ml: "",
             price200ml: "",
             price1kg: "",
@@ -597,9 +584,6 @@ export default function ProductsManager() {
             price200g: "",
             price100g: "",
             price50g: "",
-            price5kg: "",
-            price10kg: "",
-            price20kg: "",
             stock: "In Stock",
             image: null,
             image_url: "",
@@ -650,10 +634,7 @@ export default function ProductsManager() {
       setNewProduct({
         ...productToEdit,
         features,
-        price5L: productToEdit.price5L || "",
-        price5kg: productToEdit.price5kg || "",
-        price10kg: productToEdit.price10kg || "",
-        price20kg: productToEdit.price20kg || "",
+        price5l: productToEdit.price5l || "",
         image: null,
         image_url: productToEdit.image_url || "",
       });
@@ -678,11 +659,11 @@ export default function ProductsManager() {
         formData.append("category", newProduct.category);
         formData.append("description", newProduct.description || "");
         formData.append("features", JSON.stringify(newProduct.features));
-        formData.append("price1L", newProduct.price1L || "");
-        formData.append("price4L", newProduct.price4L || "");
-        formData.append("price5L", newProduct.price5L || "");
-        formData.append("price10L", newProduct.price10L || "");
-        formData.append("price20L", newProduct.price20L || "");
+        formData.append("price1l", newProduct.price1l || "");
+        formData.append("price4l", newProduct.price4l || "");
+        formData.append("price5l", newProduct.price5l || "");
+        formData.append("price10l", newProduct.price10l || "");
+        formData.append("price20l", newProduct.price20l || "");
         formData.append("price500ml", newProduct.price500ml || "");
         formData.append("price200ml", newProduct.price200ml || "");
         formData.append("price1kg", newProduct.price1kg || "");
@@ -690,9 +671,6 @@ export default function ProductsManager() {
         formData.append("price200g", newProduct.price200g || "");
         formData.append("price100g", newProduct.price100g || "");
         formData.append("price50g", newProduct.price50g || "");
-        formData.append("price5kg", newProduct.price5kg || "");
-        formData.append("price10kg", newProduct.price10kg || "");
-        formData.append("price20kg", newProduct.price20kg || "");
         formData.append("stock", newProduct.stock);
         if (newProduct.image) {
           formData.append("image", newProduct.image);
@@ -721,11 +699,11 @@ export default function ProductsManager() {
             category: "",
             description: "",
             features: [],
-            price1L: "",
-            price4L: "",
-            price5L: "",
-            price10L: "",
-            price20L: "",
+            price1l: "",
+            price4l: "",
+            price5l: "",
+            price10l: "",
+            price20l: "",
             price500ml: "",
             price200ml: "",
             price1kg: "",
@@ -733,9 +711,6 @@ export default function ProductsManager() {
             price200g: "",
             price100g: "",
             price50g: "",
-            price5kg: "",
-            price10kg: "",
-            price20kg: "",
             stock: "In Stock",
             image: null,
             image_url: "",
@@ -826,11 +801,11 @@ export default function ProductsManager() {
       category: "",
       description: "",
       features: [],
-      price1L: "",
-      price4L: "",
-      price5L: "",
-      price10L: "",
-      price20L: "",
+      price1l: "",
+      price4l: "",
+      price5l: "",
+      price10l: "",
+      price20l: "",
       price500ml: "",
       price200ml: "",
       price1kg: "",
@@ -838,9 +813,6 @@ export default function ProductsManager() {
       price200g: "",
       price100g: "",
       price50g: "",
-      price5kg: "",
-      price10kg: "",
-      price20kg: "",
       stock: "In Stock",
       image: null,
       image_url: "",
@@ -888,11 +860,11 @@ export default function ProductsManager() {
 
   const formatPriceRange = (product) => {
     const prices = [
-      product.price1L,
-      product.price4L,
-      product.price5L,
-      product.price10L,
-      product.price20L,
+      product.price1l,
+      product.price4l,
+      product.price5l,
+      product.price10l,
+      product.price20l,
       product.price500ml,
       product.price200ml,
       product.price1kg,
@@ -900,9 +872,6 @@ export default function ProductsManager() {
       product.price200g,
       product.price100g,
       product.price50g,
-      product.price5kg,
-      product.price10kg,
-      product.price20kg,
     ].filter((price) => price && price.trim() !== "");
 
     if (prices.length === 0) return "Not set";
@@ -1146,4 +1115,3 @@ export default function ProductsManager() {
     </div>
   );
 }
-

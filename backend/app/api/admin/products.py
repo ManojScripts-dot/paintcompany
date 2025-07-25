@@ -66,7 +66,7 @@ async def get_all_products(
             # Convert price fields to dictionary structure
             prices = {}
             price_fields = [
-                "price1L", "price4L", "price5L", "price10L", "price20L", 
+                "price1l", "price4l", "price5l", "price10l", "price20l", 
                 "price500ml", "price200ml", "price1kg", 
                 "price500g", "price200g", "price100g", "price50g"
             ]
@@ -88,11 +88,11 @@ async def create_product(
     category: str = Form(...),
     description: str = Form(...),
     features: str = Form("[]"),  # JSON string of features
-    price1L: Optional[str] = Form(None),
-    price4L: Optional[str] = Form(None),
-    price5L: Optional[str] = Form(None),
-    price10L: Optional[str] = Form(None),
-    price20L: Optional[str] = Form(None),
+    price1l: Optional[str] = Form(None),
+    price4l: Optional[str] = Form(None),
+    price5l: Optional[str] = Form(None),
+    price10l: Optional[str] = Form(None),
+    price20l: Optional[str] = Form(None),
     price500ml: Optional[str] = Form(None),
     price200ml: Optional[str] = Form(None),
     price1kg: Optional[str] = Form(None),
@@ -140,11 +140,11 @@ async def create_product(
         
         # Add price fields if provided
         price_fields = {
-            "price1L": price1L,
-            "price4L": price4L,
-            "price5L": price5L,
-            "price10L": price10L,
-            "price20L": price20L,
+            "price1l": price1l,
+            "price4l": price4l,
+            "price5l": price5l,
+            "price10l": price10l,
+            "price20l": price20l,
             "price500ml": price500ml,
             "price200ml": price200ml,
             "price1kg": price1kg, 
@@ -189,7 +189,7 @@ async def create_product(
         
         # Convert price fields to dictionary structure
         prices = {}
-        for field, value in price_fields.items():
+        for field in price_fields.keys():
             if product_dict.get(field):
                 # Strip "price" prefix and extract size
                 key = field.replace("price", "")
@@ -207,11 +207,11 @@ async def update_product(
     category: Optional[str] = Form(None),
     description: Optional[str] = Form(None),
     features: Optional[str] = Form(None),
-    price1L: Optional[str] = Form(None),
-    price4L: Optional[str] = Form(None),
-    price5L: Optional[str] = Form(None),
-    price10L: Optional[str] = Form(None),
-    price20L: Optional[str] = Form(None),
+    price1l: Optional[str] = Form(None),
+    price4l: Optional[str] = Form(None),
+    price5l: Optional[str] = Form(None),
+    price10l: Optional[str] = Form(None),
+    price20l: Optional[str] = Form(None),
     price500ml: Optional[str] = Form(None),
     price200ml: Optional[str] = Form(None),
     price1kg: Optional[str] = Form(None),
@@ -290,11 +290,11 @@ async def update_product(
         
         # Process price fields
         price_fields = {
-            "price1L": price1L,
-            "price4L": price4L,
-            "price5L": price5L,
-            "price10L": price10L,
-            "price20L": price20L,
+            "price1l": price1l,
+            "price4l": price4l,
+            "price5l": price5l,
+            "price10l": price10l,
+            "price20l": price20l,
             "price500ml": price500ml,
             "price200ml": price200ml,
             "price1kg": price1kg,
