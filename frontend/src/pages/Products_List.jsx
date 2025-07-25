@@ -124,25 +124,25 @@ export default function ProductCatalog() {
     // Define price fields based on category with correct database field names (lowercase)
     const priceFieldsMap = {
       "Silver/Copper/Gold": [
-        { display: "1kg", field: "price1kg" },
-        { display: "500g", field: "price500g" },
-        { display: "200g", field: "price200g" },
+        { display: "50g", field: "price50g" },
         { display: "100g", field: "price100g" },
-        { display: "50g", field: "price50g" }
+        { display: "200g", field: "price200g" },
+        { display: "500g", field: "price500g" },
+        { display: "1kg", field: "price1kg" }
       ],
       "Metal and Wood Primer": [
-        { display: "20L", field: "price20l" },
-        { display: "4L", field: "price4l" },
-        { display: "1L", field: "price1l" },
+        { display: "200ml", field: "price200ml" },
         { display: "500ml", field: "price500ml" },
-        { display: "200ml", field: "price200ml" }
+        { display: "1L", field: "price1l" },
+        { display: "4L", field: "price4l" },
+         { display: "20L", field: "price20l" }
       ],
       "Metal and Wood Enamel": [
-        { display: "20L", field: "price20l" },
-        { display: "4L", field: "price4l" },
-        { display: "1L", field: "price1l" },
+        { display: "200ml", field: "price200ml" },
         { display: "500ml", field: "price500ml" },
-        { display: "200ml", field: "price200ml" }
+        { display: "1L", field: "price1l" },
+        { display: "4L", field: "price4l" },
+        { display: "20L", field: "price20l" }
       ],
       "Aluminium Paints": [
         { display: "20L", field: "price20l" },
@@ -152,28 +152,28 @@ export default function ProductCatalog() {
         { display: "200ml", field: "price200ml" }
       ],
       "Distemper": [
-        { display: "20L", field: "price20l" },
-        { display: "10L", field: "price10l" },
+        { display: "1L", field: "price1l" },
         { display: "5L", field: "price5l" },
-        { display: "1L", field: "price1l" }
+        { display: "10L", field: "price10l" },
+        { display: "20L", field: "price20l" },
       ],
       "Primer": [
-        { display: "20L", field: "price20l" },
-        { display: "10L", field: "price10l" },
+        { display: "1L", field: "price1l" },
         { display: "4L", field: "price4l" },
-        { display: "1L", field: "price1l" }
+        { display: "10L", field: "price10l" },
+        { display: "20L", field: "price20l" }
       ],
       "Emulsion": [
-        { display: "20L", field: "price20l" },
-        { display: "10L", field: "price10l" },
+        { display: "1L", field: "price1l" },
         { display: "4L", field: "price4l" },
-        { display: "1L", field: "price1l" }
+        { display: "10L", field: "price10l" },
+        { display: "20L", field: "price20l" }
       ],
       default: [
-        { display: "20L", field: "price20l" },
-        { display: "10L", field: "price10l" },
+        { display: "1L", field: "price1l" },
         { display: "4L", field: "price4l" },
-        { display: "1L", field: "price1l" }
+        { display: "10L", field: "price10l" },
+        { display: "20L", field: "price20l" }
       ],
     };
 
