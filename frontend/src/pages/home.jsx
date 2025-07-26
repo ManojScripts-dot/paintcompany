@@ -107,9 +107,9 @@ const Home = () => {
               Space With Colors
             </h1>
             <p className="text-base sm:text-xl text-black-800 mb-4 sm:mb-8 font-bold font-lora">
-              "Custom high-quality digital paintings
+              "Premium quality paints designed to 
               <br className="hidden sm:block" />
-              crafted just for you."
+              bring your vision to life."
             </p>
             <button
               onClick={handleOrderNowClick}
