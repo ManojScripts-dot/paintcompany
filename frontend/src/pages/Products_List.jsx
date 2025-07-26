@@ -95,12 +95,12 @@ const ProductCard = memo(({ product, categoryName, index = 0 }) => {
 
       <div className="p-2 flex-1 flex flex-col transition-all duration-300">
         <div className="mb-1">
-          <span className="inline-block bg-red-100 text-red-800 text-xs px-2 py-0.5 rounded transition-all duration-300 hover:bg-red-200 hover:scale-105 hover:shadow-sm">
+          <span className="inline-block bg-red-100 text-red-800 text-xs px-2 py-0.5 rounded transition-all duration-300 hover:bg-red-200 hover:scale-105 hover:shadow-sm cursor-pointer">
             {categoryName}
           </span>
         </div>
 
-        <h3 className="font-bold text-sm mb-1 line-clamp-2 transition-all duration-300 hover:text-red-600 group-hover:text-red-700">
+        <h3 className="font-bold text-sm mb-1 line-clamp-2 transition-all duration-300 hover:text-red-600 group-hover:text-red-700 cursor-pointer">
           {product.name}
         </h3>
 
@@ -121,7 +121,7 @@ const ProductCard = memo(({ product, categoryName, index = 0 }) => {
                   price && (
                     <div 
                       key={size} 
-                      className="flex items-center space-x-1 bg-gray-100 px-1 py-0.5 rounded transition-all duration-300 hover:bg-red-50 hover:shadow-md transform hover:scale-110 hover:-translate-y-0.5"
+                      className="flex items-center space-x-1 bg-gray-100 px-1 py-0.5 rounded transition-all duration-300 hover:bg-red-50 hover:shadow-md transform hover:scale-110 hover:-translate-y-0.5 cursor-pointer"
                       style={{
                         transitionDelay: `${priceIndex * 50}ms`,
                       }}
@@ -709,9 +709,9 @@ export default function ProductCatalog() {
               >
                 {category.products.length > 0 && (
                   <div className="flex mb-4 bg-white shadow-md rounded-md overflow-hidden transition-all duration-300 hover:shadow-lg">
-                    <div className="flex-1 bg-red-600 text-white flex items-center justify-center font-bold text-xl px-4 py-2 transition-all duration-300 hover:bg-red-700">
+                    <div className="flex-1 bg-red-600 text-white flex items-center justify-center font-bold text-xl px-4 py-2 transition-all duration-300 hover:bg-red-700 cursor-pointer">
                       {category.name}
-                      <span className="ml-2 text-sm bg-white text-red-600 rounded-full px-2 py-0.5 transition-all duration-300 hover:scale-110">
+                      <span className="ml-2 text-sm bg-white text-red-600 rounded-full px-2 py-0.5 transition-all duration-300 hover:scale-110 cursor-pointer">
                         {category.products.length}
                       </span>
                     </div>
