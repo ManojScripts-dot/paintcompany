@@ -1,53 +1,135 @@
 "use client";
 
-import { useState, useEffect, useCallback, memo } from "react";
+import { useState, useEffect, useCallback, memo, useRef } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
 import { RefreshCw, Layers, ChevronDown, Search, Filter, SlidersHorizontal, X } from "lucide-react";
 
-const ProductCard = memo(({ product, categoryName }) => {
+// Custom hook for intersection observer
+const useIntersectionObserver = (options = {}) => {
+  const [isIntersecting, setIsIntersecting] = useState(false);
+  const [hasIntersected, setHasIntersected] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsIntersecting(entry.isIntersecting);
+        if (entry.isIntersecting && !hasIntersected) {
+          setHasIntersected(true);
+        }
+      },
+      {
+        threshold: 0.1,
+        rootMargin: '50px',
+        ...options,
+      }
+    );
+
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+
+    return () => {
+      if (ref.current) {
+        observer.unobserve(ref.current);
+      }
+    };
+  }, [hasIntersected, options]);
+
+  return [ref, isIntersecting, hasIntersected];
+};
+
+const ProductCard = memo(({ product, categoryName, index = 0 }) => {
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
+  const [cardRef, isIntersecting, hasIntersected] = useIntersectionObserver();
+
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col h-full">
-      <div className="aspect-square overflow-hidden bg-gray-100">
+    <div 
+      ref={cardRef}
+      className={`bg-white rounded-lg shadow-md overflow-hidden flex flex-col h-full transform transition-all duration-700 ease-out ${
+        hasIntersected 
+          ? 'opacity-100 translate-y-0 scale-100' 
+          : 'opacity-0 translate-y-8 scale-95'
+      } hover:shadow-xl hover:-translate-y-2 hover:scale-[1.02]`}
+      style={{
+        transitionDelay: `${index * 100}ms`,
+      }}
+    >
+      <div className="aspect-square overflow-hidden bg-gray-100 relative group">
+        {/* Loading state */}
+        {!imageLoaded && !imageError && (
+          <div className="absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%] animate-pulse">
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-8 h-8 border-2 border-gray-400 border-t-red-500 rounded-full animate-spin"></div>
+            </div>
+          </div>
+        )}
+        
         <img
           src={product.image || "/placeholder.svg"}
           alt={product.name}
-          className="h-full w-full object-cover object-center"
+          className={`h-full w-full object-cover object-center transition-all duration-700 ease-out transform ${
+            imageLoaded && !imageError 
+              ? 'opacity-100 scale-100 blur-0' 
+              : 'opacity-0 scale-110 blur-sm'
+          } group-hover:scale-110 group-hover:brightness-110`}
           loading="lazy"
           decoding="async"
           fetchpriority="low"
+          onLoad={() => {
+            setTimeout(() => setImageLoaded(true), 100);
+          }}
           onError={(e) => {
+            setImageError(true);
+            setImageLoaded(true);
             e.currentTarget.src = "/placeholder.svg";
             e.currentTarget.onerror = null;
           }}
         />
+        
+        {/* Overlay effect on hover */}
+        <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
       </div>
 
-      <div className="p-2 flex-1 flex flex-col">
+      <div className="p-2 flex-1 flex flex-col transition-all duration-300">
         <div className="mb-1">
-          <span className="inline-block bg-red-100 text-red-800 text-xs px-2 py-0.5 rounded">{categoryName}</span>
+          <span className="inline-block bg-red-100 text-red-800 text-xs px-2 py-0.5 rounded transition-all duration-300 hover:bg-red-200 hover:scale-105 hover:shadow-sm">
+            {categoryName}
+          </span>
         </div>
 
-        <h3 className="font-bold text-sm mb-1 line-clamp-2">{product.name}</h3>
+        <h3 className="font-bold text-sm mb-1 line-clamp-2 transition-all duration-300 hover:text-red-600 group-hover:text-red-700">
+          {product.name}
+        </h3>
 
         {product.features && product.features.length > 0 && (
-          <p className="text-xs text-gray-600 mb-2 overflow-hidden text-ellipsis">
+          <p className="text-xs text-gray-600 mb-2 overflow-hidden text-ellipsis transition-colors duration-300 group-hover:text-gray-700">
             <span className="font-medium">Features:</span> {product.features.join(", ")}
           </p>
         )}
 
         <div className="mt-auto">
-          <h4 className="text-xs font-medium text-gray-700 mb-1">Prices:</h4>
+          <h4 className="text-xs font-medium text-gray-700 mb-1 transition-colors duration-300 group-hover:text-gray-800">
+            Prices:
+          </h4>
           <div className="flex flex-wrap gap-1 text-xs">
             {Object.entries(product.prices).length > 0 ? (
               Object.entries(product.prices).map(
-                ([size, price]) =>
+                ([size, price], priceIndex) =>
                   price && (
-                    <div key={size} className="flex items-center space-x-1 bg-gray-100 px-1 py-0.5 rounded">
+                    <div 
+                      key={size} 
+                      className="flex items-center space-x-1 bg-gray-100 px-1 py-0.5 rounded transition-all duration-300 hover:bg-red-50 hover:shadow-md transform hover:scale-110 hover:-translate-y-0.5"
+                      style={{
+                        transitionDelay: `${priceIndex * 50}ms`,
+                      }}
+                    >
                       <span className="font-semibold">
                         {size.includes("L") || size.includes("ml") ? `${size.toUpperCase()}:` : `${size.toUpperCase()}:`}
                       </span>
-                      <span>{price}</span>
+                      <span className="text-red-600 font-medium">{price}</span>
                     </div>
                   ),
               )
@@ -70,27 +152,35 @@ ProductCard.propTypes = {
     prices: PropTypes.objectOf(PropTypes.string).isRequired,
   }).isRequired,
   categoryName: PropTypes.string.isRequired,
+  index: PropTypes.number,
 };
 
-const ProductCardSkeleton = () => (
-  <div className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col h-full animate-pulse">
-    <div className="aspect-square bg-gray-200"></div>
-    <div className="p-2 flex-1 flex flex-col">
-      <div className="w-1/3 h-4 bg-gray-200 rounded mb-2"></div>
-      <div className="w-full h-5 bg-gray-200 rounded mb-2"></div>
-      <div className="w-2/3 h-3 bg-gray-200 rounded mb-3"></div>
-      <div className="mt-auto">
-        <div className="w-1/4 h-3 bg-gray-200 rounded mb-2"></div>
+const ProductCardSkeleton = memo(({ index = 0 }) => (
+  <div 
+    className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col h-full animate-pulse"
+    style={{
+      animationDelay: `${index * 100}ms`,
+    }}
+  >
+    <div className="aspect-square bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%] animate-shimmer"></div>
+    <div className="p-2 flex-1 flex flex-col space-y-2">
+      <div className="w-1/3 h-4 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded animate-shimmer"></div>
+      <div className="w-full h-5 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded animate-shimmer"></div>
+      <div className="w-2/3 h-3 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded animate-shimmer"></div>
+      <div className="mt-auto space-y-2">
+        <div className="w-1/4 h-3 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded animate-shimmer"></div>
         <div className="flex flex-wrap gap-1">
-          <div className="w-16 h-5 bg-gray-200 rounded"></div>
-          <div className="w-16 h-5 bg-gray-200 rounded"></div>
+          <div className="w-16 h-5 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded animate-shimmer"></div>
+          <div className="w-16 h-5 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded animate-shimmer"></div>
         </div>
       </div>
     </div>
   </div>
-);
+));
 
-ProductCardSkeleton.propTypes = {};
+ProductCardSkeleton.propTypes = {
+  index: PropTypes.number,
+};
 
 export default function ProductCatalog() {
   const [allCategories, setAllCategories] = useState([]);
@@ -402,216 +492,288 @@ export default function ProductCatalog() {
   }, []);
 
   return (
-    <div className="bg-gray-50 min-h-screen">
-      <div className="text-black p-4 text-center">
-        <h1 className="text-2xl font-bold text-center">LUBROPAINT PRODUCT CATALOG</h1>
-      </div>
+    <>
+      {/* CSS Styles */}
+      <style jsx global>{`
+        @keyframes shimmer {
+          0% {
+            background-position: -200% 0;
+          }
+          100% {
+            background-position: 200% 0;
+          }
+        }
 
-      <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6 py-6">
-        {error && (
-          <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded text-center">
-            {error}
-            <button onClick={() => setError("")} className="ml-2 text-red-600 underline">
-              Dismiss
-            </button>
-          </div>
-        )}
+        .animate-shimmer {
+          animation: shimmer 2s infinite linear;
+        }
 
-        {!isLoading && allCategories.length > 0 && (
-          <div className="bg-white rounded-lg shadow-md p-4 mb-6">
-            <div className="flex md:hidden justify-between items-center mb-4">
-              <button
-                onClick={() => setIsFilterOpen(!isFilterOpen)}
-                className="flex items-center px-3 py-2 bg-gray-100 rounded-md text-sm font-medium"
-                aria-expanded={isFilterOpen}
-                aria-label="Toggle filters"
-              >
-                <SlidersHorizontal className="h-4 w-4 mr-2" />
-                Filters
-                {hasActiveFilters && (
-                  <span className="ml-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
-                    {(selectedCategory !== "all" ? 1 : 0) + (searchTerm !== "" ? 1 : 0)}
-                  </span>
-                )}
+        html {
+          scroll-behavior: smooth;
+        }
+
+        /* Reduce motion for accessibility */
+        @media (prefers-reduced-motion: reduce) {
+          * {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+            scroll-behavior: auto !important;
+          }
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+          width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+          background: #f1f1f1;
+          border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+          background: #c1c1c1;
+          border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+          background: #a8a8a8;
+        }
+
+        /* Utility classes for line clamping */
+        .line-clamp-2 {
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+      `}</style>
+
+      <div className="bg-gray-50 min-h-screen">
+        <div className="text-black p-4 text-center">
+          <h1 className="text-2xl font-bold text-center transition-all duration-300 hover:text-red-600">
+            LUBROPAINT PRODUCT CATALOG
+          </h1>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6 py-6">
+          {error && (
+            <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded text-center transition-all duration-300 animate-in slide-in-from-top">
+              {error}
+              <button onClick={() => setError("")} className="ml-2 text-red-600 underline hover:text-red-800 transition-colors">
+                Dismiss
               </button>
+            </div>
+          )}
 
-              {hasActiveFilters && (
-                <button onClick={handleClearFilters} className="text-sm text-red-600 flex items-center">
-                  <X className="h-3 w-3 mr-1" />
-                  Clear all
+          {!isLoading && allCategories.length > 0 && (
+            <div className="bg-white rounded-lg shadow-md p-4 mb-6 transition-all duration-300 hover:shadow-lg">
+              <div className="flex md:hidden justify-between items-center mb-4">
+                <button
+                  onClick={() => setIsFilterOpen(!isFilterOpen)}
+                  className="flex items-center px-3 py-2 bg-gray-100 rounded-md text-sm font-medium transition-all duration-200 hover:bg-gray-200 hover:scale-105"
+                  aria-expanded={isFilterOpen}
+                  aria-label="Toggle filters"
+                >
+                  <SlidersHorizontal className="h-4 w-4 mr-2" />
+                  Filters
+                  {hasActiveFilters && (
+                    <span className="ml-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs animate-pulse">
+                      {(selectedCategory !== "all" ? 1 : 0) + (searchTerm !== "" ? 1 : 0)}
+                    </span>
+                  )}
+                </button>
+
+                {hasActiveFilters && (
+                  <button onClick={handleClearFilters} className="text-sm text-red-600 flex items-center transition-all duration-200 hover:text-red-800 hover:scale-105">
+                    <X className="h-3 w-3 mr-1" />
+                    Clear all
+                  </button>
+                )}
+              </div>
+
+              <div className={`${isFilterOpen ? "block" : "hidden"} md:block transition-all duration-300`}>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                    <div className="relative">
+                      <select
+                        value={selectedCategory}
+                        onChange={(e) => {
+                          setSelectedCategory(e.target.value);
+                          setIsFilterOpen(false);
+                        }}
+                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 sm:text-sm border p-2 pr-8 transition-all duration-200 hover:border-red-300"
+                      >
+                        <option value="all">All Categories</option>
+                        {allCategories.map((category) => (
+                          <option key={category.id} value={category.id}>
+                            {category.name} ({category.products.length})
+                          </option>
+                        ))}
+                      </select>
+                      <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                        <Filter className="h-4 w-4 text-gray-400" />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Search</label>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        placeholder="Search products..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 sm:text-sm border p-2 pl-8 transition-all duration-200 hover:border-red-300"
+                      />
+                      <div className="absolute inset-y-0 left-0 flex items-center pl-2 pointer-events-none">
+                        <Search className="h-4 w-4 text-gray-400" />
+                      </div>
+                      {searchTerm && (
+                        <button
+                          onClick={() => setSearchTerm("")}
+                          className="absolute inset-y-0 right-0 flex items-center pr-2 transition-all duration-200 hover:scale-110"
+                        >
+                          <X className="h-4 w-4 text-gray-400 hover:text-gray-600" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Sort By</label>
+                    <select
+                      value={sortOption}
+                      onChange={(e) => setSortOption(e.target.value)}
+                      className="block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 sm:text-sm border p-2 transition-all duration-200 hover:border-red-300"
+                    >
+                      <option value="newest">Newest First</option>
+                      <option value="name-asc">Name (A-Z)</option>
+                      <option value="name-desc">Name (Z-A)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="hidden md:flex mt-4 items-center">
+                  {hasActiveFilters && (
+                    <>
+                      <span className="text-sm text-gray-500 mr-2">Active filters:</span>
+                      {selectedCategory !== "all" && (
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 mr-2 transition-all duration-200 hover:bg-red-200">
+                          {allCategories.find((c) => c.id === selectedCategory)?.name || selectedCategory}
+                          <button
+                            onClick={() => setSelectedCategory("all")}
+                            className="ml-1 text-red-600 hover:text-red-800 transition-colors duration-200"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </span>
+                      )}
+                      {searchTerm && (
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 mr-2 transition-all duration-200 hover:bg-red-200">
+                          Search: {searchTerm}
+                          <button onClick={() => setSearchTerm("")} className="ml-1 text-red-600 hover:text-red-800 transition-colors duration-200">
+                            <X className="h-3 w-3" />
+                          </button>
+                        </span>
+                      )}
+                      <button onClick={handleClearFilters} className="text-sm text-red-600 hover:text-red-800 ml-auto transition-all duration-200 hover:scale-105">
+                        Clear all filters
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {isLoading ? (
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+              {Array(8)
+                .fill(0)
+                .map((_, index) => (
+                  <ProductCardSkeleton key={index} index={index} />
+                ))}
+            </div>
+          ) : filteredCategories.length > 0 ? (
+            filteredCategories.map((category, categoryIndex) => (
+              <div 
+                key={category.id} 
+                className="mb-8 transition-all duration-500 ease-out"
+                style={{
+                  animationDelay: `${categoryIndex * 200}ms`,
+                }}
+              >
+                {category.products.length > 0 && (
+                  <div className="flex mb-4 bg-white shadow-md rounded-md overflow-hidden transition-all duration-300 hover:shadow-lg">
+                    <div className="flex-1 bg-red-600 text-white flex items-center justify-center font-bold text-xl px-4 py-2 transition-all duration-300 hover:bg-red-700">
+                      {category.name}
+                      <span className="ml-2 text-sm bg-white text-red-600 rounded-full px-2 py-0.5 transition-all duration-300 hover:scale-110">
+                        {category.products.length}
+                      </span>
+                    </div>
+                  </div>
+                )}
+
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                  {category.products.slice(0, visibleProducts[category.id] || PRODUCTS_PER_PAGE).map((product, index) => (
+                    <ProductCard 
+                      key={product.id} 
+                      product={product} 
+                      categoryName={category.name} 
+                      index={index}
+                    />
+                  ))}
+                </div>
+
+                {hasMore[category.id] && (
+                  <div className="flex justify-center mt-4">
+                    <button
+                      onClick={() => loadMoreProducts(category.id)}
+                      disabled={isLoadingMore[category.id]}
+                      className="flex items-center px-4 py-2 bg-red-100 text-red-800 rounded-md hover:bg-red-200 transition-all duration-300 hover:scale-105 hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed group"
+                    >
+                      {isLoadingMore[category.id] ? (
+                        <>
+                          <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                          Loading...
+                        </>
+                      ) : (
+                        <>
+                          <ChevronDown className="h-4 w-4 mr-2 transition-transform duration-300 group-hover:translate-y-1" />
+                          Load More {category.name}
+                        </>
+                      )}
+                    </button>
+                  </div>
+                )}
+              </div>
+            ))
+          ) : (
+            <div className="bg-white rounded-lg shadow p-12 text-center transition-all duration-500 hover:shadow-lg">
+              <Layers className="h-12 w-12 text-gray-400 mx-auto transition-all duration-300 hover:text-red-400 hover:scale-110" />
+              <h3 className="mt-2 text-lg font-medium text-gray-900 transition-colors duration-300">No products found</h3>
+              <p className="mt-1 text-gray-500 transition-colors duration-300">
+                {searchTerm || selectedCategory !== "all"
+                  ? "Try adjusting your search or filter criteria."
+                  : "Please add products to the catalog."}
+              </p>
+              {(searchTerm || selectedCategory !== "all") && (
+                <button
+                  onClick={handleClearFilters}
+                  className="mt-4 px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-all duration-300 hover:scale-105 hover:shadow-md"
+                >
+                  Clear Filters
                 </button>
               )}
             </div>
-
-            <div className={`${isFilterOpen ? "block" : "hidden"} md:block`}>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                  <div className="relative">
-                    <select
-                      value={selectedCategory}
-                      onChange={(e) => {
-                        setSelectedCategory(e.target.value);
-                        setIsFilterOpen(false);
-                      }}
-                      className="block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 sm:text-sm border p-2 pr-8"
-                    >
-                      <option value="all">All Categories</option>
-                      {allCategories.map((category) => (
-                        <option key={category.id} value={category.id}>
-                          {category.name} ({category.products.length})
-                        </option>
-                      ))}
-                    </select>
-                    <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                      <Filter className="h-4 w-4 text-gray-400" />
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Search</label>
-                  <div className="relative">
-                    <input
-                      type="text"
-                      placeholder="Search products..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className="block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 sm:text-sm border p-2 pl-8"
-                    />
-                    <div className="absolute inset-y-0 left-0 flex items-center pl-2 pointer-events-none">
-                      <Search className="h-4 w-4 text-gray-400" />
-                    </div>
-                    {searchTerm && (
-                      <button
-                        onClick={() => setSearchTerm("")}
-                        className="absolute inset-y-0 right-0 flex items-center pr-2"
-                      >
-                        <X className="h-4 w-4 text-gray-400 hover:text-gray-600" />
-                      </button>
-                    )}
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Sort By</label>
-                  <select
-                    value={sortOption}
-                    onChange={(e) => setSortOption(e.target.value)}
-                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 sm:text-sm border p-2"
-                  >
-                    <option value="newest">Newest First</option>
-                    <option value="name-asc">Name (A-Z)</option>
-                    <option value="name-desc">Name (Z-A)</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="hidden md:flex mt-4 items-center">
-                {hasActiveFilters && (
-                  <>
-                    <span className="text-sm text-gray-500 mr-2">Active filters:</span>
-                    {selectedCategory !== "all" && (
-                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 mr-2">
-                        {allCategories.find((c) => c.id === selectedCategory)?.name || selectedCategory}
-                        <button
-                          onClick={() => setSelectedCategory("all")}
-                          className="ml-1 text-red-600 hover:text-red-800"
-                        >
-                          <X className="h-3 w-3" />
-                        </button>
-                      </span>
-                    )}
-                    {searchTerm && (
-                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 mr-2">
-                        Search: {searchTerm}
-                        <button onClick={() => setSearchTerm("")} className="ml-1 text-red-600 hover:text-red-800">
-                          <X className="h-3 w-3" />
-                        </button>
-                      </span>
-                    )}
-                    <button onClick={handleClearFilters} className="text-sm text-red-600 hover:text-red-800 ml-auto">
-                      Clear all filters
-                    </button>
-                  </>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {isLoading ? (
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-            {Array(8)
-              .fill(0)
-              .map((_, index) => (
-                <ProductCardSkeleton key={index} />
-              ))}
-          </div>
-        ) : filteredCategories.length > 0 ? (
-          filteredCategories.map((category) => (
-            <div key={category.id} className="mb-8">
-              {category.products.length > 0 && (
-                <div className="flex mb-4 bg-white shadow-md rounded-md overflow-hidden">
-                  <div className="flex-1 bg-red-600 text-white flex items-center justify-center font-bold text-xl px-4 py-2">
-                    {category.name}
-                    <span className="ml-2 text-sm bg-white text-red-600 rounded-full px-2 py-0.5">
-                      {category.products.length}
-                    </span>
-                  </div>
-                </div>
-              )}
-
-              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                {category.products.slice(0, visibleProducts[category.id] || PRODUCTS_PER_PAGE).map((product) => (
-                  <ProductCard key={product.id} product={product} categoryName={category.name} />
-                ))}
-              </div>
-
-              {hasMore[category.id] && (
-                <div className="flex justify-center mt-4">
-                  <button
-                    onClick={() => loadMoreProducts(category.id)}
-                    disabled={isLoadingMore[category.id]}
-                    className="flex items-center px-4 py-2 bg-red-100 text-red-800 rounded-md hover:bg-red-200 transition-colors"
-                  >
-                    {isLoadingMore[category.id] ? (
-                      <>
-                        <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
-                        Loading...
-                      </>
-                    ) : (
-                      <>
-                        <ChevronDown className="h-4 w-4 mr-2" />
-                        Load More {category.name}
-                      </>
-                    )}
-                  </button>
-                </div>
-              )}
-            </div>
-          ))
-        ) : (
-          <div className="bg-white rounded-lg shadow p-12 text-center">
-            <Layers className="h-12 w-12 text-gray-400 mx-auto" />
-            <h3 className="mt-2 text-lg font-medium text-gray-900">No products found</h3>
-            <p className="mt-1 text-gray-500">
-              {searchTerm || selectedCategory !== "all"
-                ? "Try adjusting your search or filter criteria."
-                : "Please add products to the catalog."}
-            </p>
-            {(searchTerm || selectedCategory !== "all") && (
-              <button
-                onClick={handleClearFilters}
-                className="mt-4 px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors"
-              >
-                Clear Filters
-              </button>
-            )}
-          </div>
-        )}
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
