@@ -1,26 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import Slider1 from '../assets/Home/Slider1.jpeg'; 
-import Slider2 from '../assets/Home/Slider2.jpeg';
-import Slider3 from '../assets/Home/Slider3.jpeg';
-import Slider4 from '../assets/Home/Slider4.jpeg';
+import React, { useState, useEffect } from "react";
+import Slider1 from "../assets/Home/Slider1.jpeg";
+import Slider2 from "../assets/Home/Slider2.jpeg";
+import Slider3 from "../assets/Home/Slider3.jpeg";
+import Slider4 from "../assets/Home/Slider4.jpeg";
 
 const Home = () => {
   const carouselImages = [
     {
-      src: Slider1, 
-      alt: 'Modern living room with vibrant colors',
+      src: Slider1,
+      alt: "Modern living room with vibrant colors",
     },
     {
       src: Slider2,
-      alt: 'Cozy bedroom with pastel tones',
+      alt: "Cozy bedroom with pastel tones",
     },
     {
       src: Slider3,
-      alt: 'Decorated home with paintings',
+      alt: "Decorated home with paintings",
     },
     {
       src: Slider4,
-      alt: 'Paint cans and supplies',
+      alt: "Paint cans and supplies",
     },
   ];
 
@@ -28,8 +28,10 @@ const Home = () => {
   const [touchStartX, setTouchStartX] = useState(null);
   const [touchEndX, setTouchEndX] = useState(null);
 
-  const prevIndex = currentIndex === 0 ? carouselImages.length - 1 : currentIndex - 1;
-  const nextIndex = currentIndex === carouselImages.length - 1 ? 0 : currentIndex + 1;
+  const prevIndex =
+    currentIndex === 0 ? carouselImages.length - 1 : currentIndex - 1;
+  const nextIndex =
+    currentIndex === carouselImages.length - 1 ? 0 : currentIndex + 1;
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -42,14 +44,14 @@ const Home = () => {
 
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === 'ArrowLeft') {
+      if (e.key === "ArrowLeft") {
         goToPrevious();
-      } else if (e.key === 'ArrowRight') {
+      } else if (e.key === "ArrowRight") {
         goToNext();
       }
     };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
   const goToPrevious = () => {
@@ -87,14 +89,14 @@ const Home = () => {
   };
 
   const handleOrderNowClick = () => {
-    const contactSection = document.getElementById('contact');
+    const contactSection = document.getElementById("contact");
     if (contactSection) {
-      contactSection.scrollIntoView({ behavior: 'smooth' });
+      contactSection.scrollIntoView({ behavior: "smooth" });
     }
   };
 
   const handleImageError = (e) => {
-    e.target.src = 'https://via.placeholder.com/400?text=Image+Not+Found';
+    e.target.src = "https://via.placeholder.com/400?text=Image+Not+Found";
   };
 
   return (
@@ -107,9 +109,8 @@ const Home = () => {
               Space With Colors
             </h1>
             <p className="text-base sm:text-xl text-black-800 mb-4 sm:mb-8 font-bold font-lora">
-              "Premium quality paints designed to 
-              <br className="hidden sm:block" />
-              bring your vision to life."
+              "Premium quality paints designed to
+              <br className="hidden sm:block" /> bring your vision to life."
             </p>
             <button
               onClick={handleOrderNowClick}
@@ -158,8 +159,18 @@ const Home = () => {
                 className="hidden sm:block absolute left-2 sm:left-4 top-1/2 transform -translate-y-1/2 bg-white/80 p-2 rounded-full shadow-md hover:bg-white transition-colors z-30"
                 aria-label="Previous image"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M15 19l-7-7 7-7"
+                  />
                 </svg>
               </button>
 
@@ -168,8 +179,18 @@ const Home = () => {
                 className="hidden sm:block absolute right-2 sm:right-4 top-1/2 transform -translate-y-1/2 bg-white/80 p-2 rounded-full shadow-md hover:bg-white transition-colors z-30"
                 aria-label="Next image"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M9 5l7 7-7 7"
+                  />
                 </svg>
               </button>
             </div>
