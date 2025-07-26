@@ -36,7 +36,7 @@ const Home = () => {
       setCurrentIndex((prevIndex) =>
         prevIndex === carouselImages.length - 1 ? 0 : prevIndex + 1
       );
-    }, 5000);
+    }, 2000);
     return () => clearInterval(interval);
   }, []);
 
