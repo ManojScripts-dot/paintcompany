@@ -1,51 +1,65 @@
+"use client"
+
 import { MapPin, Phone, Mail, Clock, Navigation } from "lucide-react"
 
 const LocationPage = () => {
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm">
-        <div className="container mx-auto px-4  py-6">
-          <h1 className="text-3xl    text-center font-bold text-gray-800">Find Us</h1>
-          <p className="text-gray-600 mt-2  text-center">Visit our store in Itahari</p>
+    <div className="py-24 bg-gray-50">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+        {/* Header */}
+        <div className="text-center mb-20">
+          <h1 className="text-4xl lg:text-6xl font-light text-gray-900 mb-6">
+            Find <span className="text-red-500 font-normal">Us</span>
+          </h1>
+          <p className="text-xl text-gray-600 font-light">
+            Visit our store in Itahari for expert advice and quality paints
+          </p>
         </div>
-      </header>
 
-      <main className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h2 className="text-2xl font-semibold text-gray-800 mb-6">Contact Information</h2>
+        <div className="grid lg:grid-cols-5 gap-12">
+          {/* Contact Information */}
+          <div className="lg:col-span-2">
+            <div className="bg-white rounded-3xl p-8 shadow-lg">
+              <h2 className="text-2xl font-medium text-gray-900 mb-8">Contact Information</h2>
 
-              <div className="space-y-4">
-                <div className="flex items-start">
-                  <MapPin className="w-5 h-5 text-red-500 mt-1 mr-3 flex-shrink-0" />
+              <div className="space-y-6">
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <MapPin className="w-6 h-6 text-red-500" />
+                  </div>
                   <div>
-                    <h3 className="font-medium text-gray-800">Address</h3>
-                    <p className="text-gray-600">B.P. Chowk, Nepalgunj 21900, Nepal</p>
+                    <h3 className="font-medium text-gray-900 mb-1">Address</h3>
+                    <p className="text-gray-600">Corporate Office: Itahari, Sunsari, Nepal</p>
+                    <p className="text-gray-600">Factory: Inaruwa, Sunsari, Nepal</p>
                   </div>
                 </div>
 
-                <div className="flex items-start">
-                  <Phone className="w-5 h-5 text-green-500 mt-1 mr-3 flex-shrink-0" />
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <Phone className="w-6 h-6 text-red-500" />
+                  </div>
                   <div>
-                    <h3 className="font-medium text-gray-800">Phone</h3>
-                    <p className="text-gray-600">+977 81 520123</p>
-                    <p className="text-gray-600">+977 9812345678</p>
+                    <h3 className="font-medium text-gray-900 mb-1">Phone</h3>
+                    <p className="text-gray-600">+977 9800000000</p>
                   </div>
                 </div>
 
-                <div className="flex items-start">
-                  <Mail className="w-5 h-5 text-blue-500 mt-1 mr-3 flex-shrink-0" />
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <Mail className="w-6 h-6 text-red-500" />
+                  </div>
                   <div>
-                    <h3 className="font-medium text-gray-800">Email</h3>
-                    <p className="text-gray-600">info@example.com</p>
+                    <h3 className="font-medium text-gray-900 mb-1">Email</h3>
+                    <p className="text-gray-600">paintcompany@gmail.com</p>
                   </div>
                 </div>
 
-                <div className="flex items-start">
-                  <Clock className="w-5 h-5 text-purple-500 mt-1 mr-3 flex-shrink-0" />
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <Clock className="w-6 h-6 text-red-500" />
+                  </div>
                   <div>
-                    <h3 className="font-medium text-gray-800">Business Hours</h3>
+                    <h3 className="font-medium text-gray-900 mb-1">Business Hours</h3>
                     <p className="text-gray-600">Monday - Friday: 9:00 AM - 6:00 PM</p>
                     <p className="text-gray-600">Saturday: 10:00 AM - 4:00 PM</p>
                     <p className="text-gray-600">Sunday: Closed</p>
@@ -53,40 +67,38 @@ const LocationPage = () => {
                 </div>
               </div>
 
-              <div className="mt-8">
-                <h3 className="font-medium text-gray-800 mb-2">Get Directions</h3>
+              <div className="mt-8 pt-8 border-t border-gray-200">
                 <a
-                  href="https://www.google.com/maps/dir//B.P.+Chowk+Nepalgunj+21900/@28.0590319,81.6130979,14z/data=!4m5!4m4!1m0!1m2!1m1!1s0x3998673f7d48a19d:0xb3229e7ec1b4f417"
+                  href="https://www.google.com/maps/dir/?api=1&destination=Sangit+Chowk,Itahari,Nepal"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                  className="inline-flex items-center gap-3 bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-full font-medium transition-all duration-300 hover:scale-105"
                 >
-                  <Navigation className="w-4 h-4 mr-2" />
+                  <Navigation className="w-5 h-5" />
                   Directions
                 </a>
               </div>
             </div>
           </div>
 
-          <div className="lg:col-span-2">
-            <div className="bg-white rounded-lg shadow-md p-4 h-full">
-              <div className="rounded-lg overflow-hidden h-full min-h-[400px]">
-                <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14083.254696854301!2d81.60693880904246!3d28.06071326570601!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3998673f7d48a19d%3A0xb3229e7ec1b4f417!2sB.P.%20Chowk%2C%20Nepalgunj%2021900!5e0!3m2!1sen!2snp!4v1743742460106!5m2!1sen!2snp"
-                  width="100%"
-                  height="100%"
-                  style={{ border: 0 }}
-                  allowFullScreen=""
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  title="B.P. Chowk, Nepalgunj Map"
-                  className="w-full h-full"
-                ></iframe>
-              </div>
+          {/* Map */}
+          <div className="lg:col-span-3">
+            <div className="bg-white rounded-3xl overflow-hidden shadow-lg h-full min-h-[500px]">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d222.8455842086341!2d87.27563313715014!3d26.663547776971367!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39ef6d068e06461f%3A0x3ac4686ad964238d!2z4aSb4aSj4aSY4aSg4aSW4aSlIFNhbmdpdCBDaG93ayDgpLjgpILgpJfgpYDgpKQg4KSa4KWM4KSV!5e0!3m2!1sen!2snp!4v1751882104956!5m2!1sen!2snp"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen={true}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Sangit Chowk, Itahari Map"
+                className="w-full h-full"
+              />
             </div>
           </div>
         </div>
-      </main>
+      </div>
     </div>
   )
 }

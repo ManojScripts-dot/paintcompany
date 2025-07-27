@@ -1,10 +1,8 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { Star, Umbrella, Hammer, Leaf, Loader2 } from "lucide-react"
 import axios from "axios"
-import paint from "../assets/paintcategory/primer.png"
-import { Star, Umbrella, Hammer, Leaf } from "lucide-react"
-import photo from "../assets/Images.jpeg"
 
 const PopularProduct = () => {
   const [featuredProduct, setFeaturedProduct] = useState(null)
@@ -14,7 +12,7 @@ const PopularProduct = () => {
   const API_BASE_URL = "https://paintcompanybackend.onrender.com"
 
   const getImageUrl = (imageUrl) => {
-    if (!imageUrl) return paint
+    if (!imageUrl) return "/placeholder.svg?height=400&width=400&text=Featured+Product"
 
     if (imageUrl.startsWith("http://") || imageUrl.startsWith("https://")) {
       return imageUrl
@@ -55,8 +53,8 @@ const PopularProduct = () => {
             id: product.id,
             name: product.name,
             image: getImageUrl(product.image_url),
-            type: product.type || "Exterior / Interior",
-            description: product.description || "High quality paint product",
+            type: product.type || "Premium Paint",
+            description: product.description || "High quality paint product with exceptional performance",
             features: Array.isArray(product.features) ? product.features : [],
             rating: Number.parseFloat(product.rating) || 4.5,
           }))
@@ -72,12 +70,12 @@ const PopularProduct = () => {
         setError(err.message || "Failed to load products")
 
         setFeaturedProduct({
-          name: "Exterior Primer",
-          type: "Primer",
-          description: "Ultimate weather protection with a smooth, lasting finish.",
+          name: "Premium Exterior Paint",
+          type: "Exterior Paint",
+          description: "Ultimate weather protection with a smooth, lasting finish that transforms any space.",
           features: ["Weather Resistance", "Durability", "Low VOC"],
           rating: 4.5,
-          image: paint,
+          image: "/src/assets/paintcategory/primer.png",
         })
       } finally {
         setLoading(false)
@@ -87,8 +85,8 @@ const PopularProduct = () => {
     fetchFeaturedProduct()
   }, [])
 
-  const getFeatureIcon = (feature) => {
-    if (!feature) return <Star className="w-4 h-4" />
+  const getFeatureIcon = (feature, index) => {
+    if (!feature) return <Star className="w-5 h-5 text-red-500" />
 
     const featureText = feature.toLowerCase()
 
@@ -98,16 +96,16 @@ const PopularProduct = () => {
       return <Hammer className="w-5 h-5 text-red-500" />
     if (featureText.includes("voc") || featureText.includes("eco")) return <Leaf className="w-5 h-5 text-red-500" />
 
-    return <Star className="w-4 h-4" />
+    return <Star className="w-5 h-5 text-red-500" />
   }
 
   const displayFeatured = featuredProduct || {
-    name: "Exterior Primer",
-    type: "Primer",
-    description: "Ultimate weather protection with a smooth, lasting finish.",
+    name: "Premium Exterior Paint",
+    type: "Exterior Paint",
+    description: "Ultimate weather protection with a smooth, lasting finish that transforms any space.",
     features: ["Weather Resistance", "Durability", "Low VOC"],
     rating: 4.5,
-    image: paint,
+    image: "/placeholder.svg?height=400&width=400&text=Featured+Product",
   }
 
   const formatRating = (rating) => {
@@ -115,68 +113,106 @@ const PopularProduct = () => {
     return numRating.toFixed(1)
   }
 
+  const renderStars = (rating) => {
+    const stars = []
+    const numRating = typeof rating === "number" ? rating : Number.parseFloat(rating) || 4.5
+
+    for (let i = 1; i <= 5; i++) {
+      stars.push(
+        <Star key={i} className={`w-5 h-5 ${i <= numRating ? "text-yellow-400 fill-current" : "text-gray-300"}`} />,
+      )
+    }
+    return stars
+  }
+
+  if (loading) {
+    return (
+      <section className="py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="flex items-center justify-center py-20">
+            <Loader2 className="w-8 h-8 text-red-500 animate-spin" />
+            <span className="ml-3 text-gray-600 font-light">Loading featured product...</span>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
   return (
-    <div className="w-full min-h-screen md:h-screen relative bg-gray-50 overflow-hidden flex flex-col border-r-2">
-      <div className="w-full px-4 py-6 md:py-8 text-center flex-shrink-0">
-        <h2 className="text-xl md:text-2xl font-normal text-gray-500 mb-2 md:mb-4">Our #1 Customer Favourite</h2>
-
-        <div className="flex flex-col md:flex-row items-center justify-center mb-4 md:mb-6">
-          <div className="flex flex-col items-center">
-            <h1 className="text-3xl md:text-5xl font-bold text-purple-800 mb-1 md:mb-2">{displayFeatured.name}</h1>
-            <p className="text-sm md:text-base text-gray-600">{displayFeatured.type}</p>
+    <section className="py-24 bg-white">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+        {/* Header */}
+        <div className="text-center mb-20">
+          <div className="inline-flex items-center gap-2 bg-red-100 text-red-800 px-4 py-2 rounded-full text-sm font-medium mb-6">
+            <Star className="w-4 h-4 fill-current" />
+            Customer Favorite
           </div>
-
-          <div className="mt-4 md:mt-0 md:ml-8 md:border-l md:pl-8 h-16 md:h-24 flex items-center">
-            <Star className="w-5 h-5 md:w-6 md:h-6 fill-orange-500 text-orange-500" />
-            <span className="text-lg md:text-xl font-medium ml-2">{formatRating(displayFeatured.rating)}/5</span>
-          </div>
-        </div>
-
-        <div className="flex flex-col sm:flex-row justify-center items-center gap-4 md:gap-10 mt-4 md:mt-8 px-2">
-          {(displayFeatured.features || []).slice(0, 3).map((feature, index) => (
-            <div key={index} className="flex items-center gap-2 md:gap-3">
-              <div className="flex items-center justify-center">
-                {index === 0 && <Umbrella className="w-5 h-5 md:w-6 md:h-6 text-red-500" />}
-                {index === 1 && <Hammer className="w-5 h-5 md:w-6 md:h-6 text-red-500" />}
-                {index === 2 && <Leaf className="w-5 h-5 md:w-6 md:h-6 text-red-500" />}
-              </div>
-              <span className="text-sm md:text-base font-medium text-gray-700">{feature}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="w-full flex-1 grid grid-cols-1 md:grid-cols-5 relative">
-        <div className="md:col-span-3 h-64 sm:h-80 md:h-full overflow-hidden">
-          <img
-            src={photo || "/placeholder.svg"}
-            alt="Room with painted walls"
-            className="w-full h-full object-cover rounded-tr-[30px] md:rounded-tr-[30px] rounded-tl-0 rounded-bl-0 rounded-br-0 border-tr-4 border-r-4 border-l-0 border-b-0 border-purple-600"
-            onError={(e) => {
-              e.target.src =
-                "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
-            }}
-          />
-        </div>
-
-        <div className="md:col-span-2 flex flex-col items-center justify-start p-4 md:p-20 h-full">
-          <div className="w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 lg:w-72 lg:h-72 max-w-full max-h-full mb-2 md:mb-4 flex items-center justify-center">
-            <img
-              src={displayFeatured.image || paint}
-              alt={displayFeatured.name}
-              className="w-full h-full object-contain"
-              onError={(e) => {
-                e.target.src = paint
-              }}
-            />
-          </div>
-
-          <p className="text-center text-lg md:text-xl font-medium text-gray-700 max-w-xs italic overflow-hidden text-ellipsis line-clamp-3">
-            "{displayFeatured.description}"
+          <h2 className="text-4xl lg:text-6xl font-light text-gray-900 mb-6">
+            Featured <span className="text-red-500 font-normal">Product</span>
+          </h2>
+          <p className="text-xl text-gray-600 font-light max-w-3xl mx-auto">
+            Discover our most popular paint solution, trusted by professionals and homeowners alike.
           </p>
         </div>
+
+        {/* Product Showcase */}
+        <div className="bg-gradient-to-br from-gray-50 to-white rounded-3xl overflow-hidden shadow-2xl">
+          <div className="grid lg:grid-cols-2 gap-0">
+            {/* Product Image */}
+            <div className="relative bg-gradient-to-br from-red-50 to-white p-12 flex items-center justify-center">
+              <div className="relative">
+                <div className="absolute -top-4 -right-4 bg-red-500 text-white w-16 h-16 rounded-full flex items-center justify-center font-bold text-lg shadow-lg">
+                  #{1}
+                </div>
+                <img
+                  src={displayFeatured.image || "/placeholder.svg"}
+                  alt={displayFeatured.name}
+                  className="w-80 h-80 object-contain drop-shadow-2xl"
+                  onError={(e) => {
+                    e.target.src = "/placeholder.svg?height=400&width=400&text=Featured+Product"
+                  }}
+                />
+              </div>
+            </div>
+
+            {/* Product Details */}
+            <div className="p-12 flex flex-col justify-center space-y-8">
+              <div className="space-y-6">
+                <div className="space-y-2">
+                  <p className="text-red-500 font-medium text-lg">{displayFeatured.type}</p>
+                  <h3 className="text-3xl lg:text-4xl font-light text-gray-900">{displayFeatured.name}</h3>
+                </div>
+
+                <p className="text-lg text-gray-600 font-light leading-relaxed">{displayFeatured.description}</p>
+
+                {/* Rating */}
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-1">{renderStars(displayFeatured.rating)}</div>
+                  <span className="text-2xl font-light text-gray-900">{formatRating(displayFeatured.rating)}/5</span>
+                  <span className="text-gray-500 font-light">Customer Rating</span>
+                </div>
+
+                {/* Features */}
+                {displayFeatured.features && displayFeatured.features.length > 0 && (
+                  <div className="space-y-4">
+                    <h4 className="text-lg font-medium text-gray-900">Key Features</h4>
+                    <div className="grid grid-cols-1 gap-3">
+                      {displayFeatured.features.slice(0, 3).map((feature, index) => (
+                        <div key={index} className="flex items-center gap-3">
+                          {getFeatureIcon(feature, index)}
+                          <span className="text-gray-700 font-light">{feature}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+    </section>
   )
 }
 

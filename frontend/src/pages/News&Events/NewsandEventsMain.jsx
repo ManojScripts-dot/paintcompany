@@ -2,17 +2,23 @@ import NnE from "./NnE";
 import NewArrival from "./NewArrival";
 
 function NewsAndEventsMain() {
-    return (
-        <div className="flex flex-col md:flex-row items-stretch w-full bg-[#f5f5f5] py-5 ">
-            <div className="w-full md:w-1/2">
-                <NnE />
-            </div>
-            <div className="hidden md:block border-l-2 border-gray-500 mx-2 sm:mx-4 self-stretch"></div>
-            <div className="w-full md:w-1/2">
-                <NewArrival />
-            </div>
+  return (
+    <section className="py-24 bg-gray-50">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+        <div className="grid lg:grid-cols-2 gap-16">
+          {/* News & Events */}
+          <div className="space-y-8">
+            <NnE />
+          </div>
+
+          {/* New Arrival */}
+          <div className="space-y-8">
+            <NewArrival />
+          </div>
         </div>
-    );
+      </div>
+    </section>
+  )
 }
 
-export default NewsAndEventsMain;
+export default NewsAndEventsMain

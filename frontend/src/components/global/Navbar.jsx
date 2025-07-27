@@ -2,24 +2,44 @@
 
 import { useState, useEffect } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
+import { Menu, X } from "lucide-react"
 
 export default function Navbar({ sectionRefs }) {
   const [activeItem, setActiveItem] = useState("Home")
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
   const navigate = useNavigate()
   const location = useLocation()
-  const menuItems = ["Home", "About Us", "Products", "Find Store", "News and Events", "Contact Us"]
 
+  const menuItems = [
+    { id: "Home", label: "Home", path: "/", section: "Home" },
+    { id: "About Us", label: "About", path: "/", section: "About Us" },
+    { id: "Products", label: "Products", path: "/products", section: null },
+    { id: "News and Events", label: "News", path: "/", section: "News and Events" },
+    { id: "Contact Us", label: "Contact", path: "/", section: "Contact Us" },
+    { id: "Find Store", label: "Location", path: "/find-store", section: null },
+  ]
+
+  // Update active item based on current route
   useEffect(() => {
-    if (location.pathname === "/products") {
-      setActiveItem("Products")
-    } else if (location.pathname === "/find-store") {
-      setActiveItem("Find Store")
-    } else {
-      setActiveItem("Home")
-    }
+    const currentPath = location.pathname
+    const activeMenuItem = menuItems.find(
+      (item) => item.path === currentPath || (currentPath === "/" && item.id === "Home")
+    )
+    setActiveItem(activeMenuItem?.id || "Home")
   }, [location.pathname])
 
+  // Handle scroll effect
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20)
+    }
+
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
+
+  // Handle click outside to close mobile menu
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (isMenuOpen && !event.target.closest("nav")) {
@@ -28,55 +48,42 @@ export default function Navbar({ sectionRefs }) {
     }
 
     document.addEventListener("mousedown", handleClickOutside)
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside)
-    }
+    return () => document.removeEventListener("mousedown", handleClickOutside)
   }, [isMenuOpen])
 
+  // Handle body overflow for mobile menu
   useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth >= 1024 && isMenuOpen) {
-        setIsMenuOpen(false)
-      }
-    }
-
-    window.addEventListener("resize", handleResize)
-    return () => {
-      window.addEventListener("resize", handleResize)
-    }
-  }, [isMenuOpen])
-
-  useEffect(() => {
-    if (isMenuOpen) {
-      document.body.style.overflow = "hidden"
-    } else {
-      document.body.style.overflow = ""
-    }
-
+    document.body.style.overflow = isMenuOpen ? "hidden" : ""
     return () => {
       document.body.style.overflow = ""
     }
   }, [isMenuOpen])
 
   const handleClick = (item) => {
-    setActiveItem(item)
+    setActiveItem(item.id)
     setIsMenuOpen(false)
 
-    if (item === "Find Store") {
-      navigate("/find-store")
-    } else if (item === "Products") {
-      navigate("/products")
-    } else {
+    if (item.id === "Home") {
+      // Special handling for Home: always navigate to / and scroll to top
+      navigate("/")
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: "smooth" })
+      }, 100)
+    } else if (item.path && item.path !== "/") {
+      // Navigate to multi-page routes (Products, Find Store)
+      navigate(item.path)
+    } else if (item.path === "/" && item.section && sectionRefs[item.section]?.current) {
+      // Scroll to section on homepage
       if (location.pathname !== "/") {
         navigate("/")
         setTimeout(() => {
-          sectionRefs[item]?.current?.scrollIntoView({
+          sectionRefs[item.section]?.current?.scrollIntoView({
             behavior: "smooth",
             block: "start",
           })
         }, 100)
       } else {
-        sectionRefs[item]?.current?.scrollIntoView({
+        sectionRefs[item.section]?.current?.scrollIntoView({
           behavior: "smooth",
           block: "start",
         })
@@ -84,105 +91,83 @@ export default function Navbar({ sectionRefs }) {
     }
   }
 
-  const toggleMenu = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
+  const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen)
   }
 
   return (
-    <nav className="border-b border-gray-100 mt-[20px] font-lora text-black relative z-30">
-      <div className="max-w-7xl mx-auto px-0 sm:px-2 lg:px-4">
-        <div className="relative py-1">
-          <button
-            className={`lg:hidden absolute right-1 top-1/2 -translate-y-1/2 p-1 focus:outline-none z-40 ${
-              isMenuOpen ? "hidden" : "block"
-            }`}
-            onClick={toggleMenu}
-            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-            aria-expanded={isMenuOpen}
-            type="button"
-          >
-            <svg
-              className="w-6 h-6 text-gray-800 transition-transform duration-300 ease-in-out"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M4 6h16M4 12h16M4 18h16"
-                className="transition-opacity duration-300 ease-in-out"
+    <nav
+      className={`sticky top-0 z-50 transition-all duration-300 ${
+        scrolled ? "bg-white/95 backdrop-blur-md shadow-lg" : "bg-white"
+      } border-b border-gray-100`}
+    >
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+        <div className="flex justify-between items-center py-4">
+          {/* Logo */}
+          <div className="flex-shrink-0">
+            <a href="/" className="group">
+              <img
+                src="/assets/logo.png"
+                alt="Paint Company"
+                className="h-8 w-auto transition-transform duration-200 group-hover:scale-105"
               />
-            </svg>
-          </button>
+            </a>
+          </div>
 
-          <div className={`hidden lg:flex justify-end pr-2 space-x-3 xl:space-x-6 ${isMenuOpen ? 'lg:relative lg:z-30' : ''}`}>
+          {/* Desktop Menu */}
+          <div className="hidden lg:flex items-center space-x-8">
             {menuItems.map((item) => (
               <button
-                key={item}
-                className={`relative inline-flex items-center px-1 pt-0.5 pb-1.5 text-base xl:text-xl font-medium ${
-                  activeItem === item ? "text-black" : "text-gray-700 hover:text-gray-900"
-                }`}
+                key={item.id}
                 onClick={() => handleClick(item)}
-                type="button"
+                className={`relative px-4 py-2 text-sm font-medium transition-all duration-200 ${
+                  activeItem === item.id ? "text-red-500" : "text-gray-700 hover:text-red-500"
+                } group`}
+                aria-current={activeItem === item.id ? "page" : undefined}
               >
-                {item}
-                {activeItem === item && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-red-600"></div>}
-              </button>
-            ))}
-          </div>
-
-          {isMenuOpen && (
-            <div className="fixed inset-0 bg-black bg-opacity-70 z-40" onClick={toggleMenu} aria-hidden="true" />
-          )}
-
-          <div
-            className={`${
-              isMenuOpen ? "flex fixed top-0 right-0 bg-white z-50 w-64 h-auto max-h-[80vh]" : "hidden"
-            } lg:hidden flex-col pt-12 pb-4 px-3 transition-all duration-300 ease-in-out shadow-lg overflow-y-auto`}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              className="absolute top-3 right-3 p-1 focus:outline-none z-50"
-              onClick={toggleMenu}
-              aria-label="Close menu"
-              type="button"
-            >
-              <svg
-                className="w-6 h-6 text-gray-800"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-
-            {menuItems.map((item, index) => (
-              <button
-                key={item}
-                className={`relative w-full text-left py-3 text-lg font-medium ${
-                  activeItem === item ? "text-black" : "text-gray-700 hover:text-gray-900"
-                } ${index > 0 ? "border-t border-gray-100" : ""}`}
-                onClick={() => handleClick(item)}
-                type="button"
-              >
-                {item}
-                {activeItem === item && (
-                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-red-600"></div>
+                {item.label}
+                {activeItem === item.id && (
+                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-red-500 rounded-full"></div>
                 )}
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-red-500 rounded-full scale-x-0 group-hover:scale-x-100 transition-transform duration-200"></div>
               </button>
             ))}
           </div>
+
+          {/* Mobile Menu Button */}
+          <button
+            onClick={toggleMenu}
+            className="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200"
+            aria-label={isMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+          >
+            {isMenuOpen ? <X className="w-6 h-6 text-gray-700" /> : <Menu className="w-6 h-6 text-gray-700" />}
+          </button>
         </div>
+
+        {/* Mobile Menu */}
+        {isMenuOpen && (
+          <>
+            <div className="fixed inset-0 bg-black/50 z-40 lg:hidden" onClick={toggleMenu} />
+            <div className="absolute top-full left-0 right-0 bg-white shadow-xl border-t border-gray-100 z-50 lg:hidden">
+              <div className="px-6 py-4 space-y-2">
+                {menuItems.map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => handleClick(item)}
+                    className={`block w-full text-left px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${
+                      activeItem === item.id
+                        ? "text-red-500 bg-red-50"
+                        : "text-gray-700 hover:text-red-500 hover:bg-gray-50"
+                    }`}
+                    aria-current={activeItem === item.id ? "page" : undefined}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </nav>
   )

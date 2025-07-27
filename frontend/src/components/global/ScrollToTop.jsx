@@ -1,21 +1,11 @@
 "use client"
 
 import { useEffect, useRef } from "react"
-import { useLocation } from "react-router-dom"
 
 function ScrollToTop() {
-  const { pathname, hash } = useLocation()
   const scrolledRef = useRef(false)
 
   useEffect(() => {
-    if (hash) {
-      const element = document.getElementById(hash.substring(1))
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth" })
-        return
-      }
-    }
-
     const scrollToTop = () => {
       window.scrollTo({
         top: 0,
@@ -30,7 +20,7 @@ function ScrollToTop() {
     if (!scrolledRef.current) {
       window.requestAnimationFrame(scrollToTop)
     }
-  }, [pathname, hash])
+  }, [])
 
   return null
 }
