@@ -5,7 +5,6 @@ import "./index.css"
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom"
 import { Toaster } from "react-hot-toast"
 
-import Header from "./components/global/Header"
 import Navbar from "./components/global/Navbar"
 import Footer from "./components/global/footer"
 
@@ -151,7 +150,6 @@ function App() {
           path="/"
           element={
             <div className="flex flex-col min-h-screen">
-              <Header />
               <Navbar sectionRefs={sectionRefs} />
               <MainContent />
               <Footer />
@@ -162,7 +160,6 @@ function App() {
           path="/find-store"
           element={
             <div className="flex flex-col min-h-screen">
-              <Header />
               <Navbar sectionRefs={sectionRefs} />
               <LocationPage />
               <Footer />
@@ -173,7 +170,6 @@ function App() {
           path="/products"
           element={
             <div className="flex flex-col min-h-screen">
-              <Header />
               <Navbar sectionRefs={sectionRefs} />
               <ProductCatalog />
               <Footer />

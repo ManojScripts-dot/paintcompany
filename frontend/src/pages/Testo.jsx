@@ -2,40 +2,50 @@
 
 import { useState, useEffect } from "react"
 import { Star, Quote } from "lucide-react"
+import ramesh from "../assets/Testo/ramesh.jpeg"
+import sunita from "../assets/Testo/sunita.jpeg"
+import dipesh from "../assets/Testo/dipesh.jpg"
+import shyam from "../assets/Testo/shyam.png"
+import sabina from "../assets/Testo/sabina.jpg"
 
 const testimonials = [
   {
     id: 1,
     name: "Ramesh Tamang",
-    image: "/placeholder.svg?height=80&width=80&text=RT",
+    image: ramesh,
+    alt: "Ramesh Tamang",
     text: "Paint Company completely transformed our home! The colors are rich, long-lasting, and exactly what we imagined.",
     rating: 4.5,
   },
   {
     id: 2,
     name: "Sunita Karki",
-    image: "/placeholder.svg?height=80&width=80&text=SK",
+    image: sunita,
+    alt: "Sunita Karki",
     text: "We've been using Paint Company for our projects for years. Reliable quality, great coverage, and eco-friendly too!",
     rating: 4.0,
   },
   {
     id: 3,
     name: "Dipesh Shrestha",
-    image: "/placeholder.svg?height=80&width=80&text=DS",
+    image: dipesh,
+    alt: "Dipesh Shrestha",
     text: "Loved the smooth finish and wide color selection. Paint Company made our house feel like a home.",
     rating: 5.0,
   },
   {
     id: 4,
     name: "Shyam Bahadur",
-    image: "/placeholder.svg?height=80&width=80&text=SB",
+    image: shyam,
+    alt: "Shyam Bahadur",
     text: "Professional service and top-notch products. My walls still look freshly painted even after months!",
     rating: 4.2,
   },
   {
     id: 5,
     name: "Sabina Rai",
-    image: "/placeholder.svg?height=80&width=80&text=SR",
+    image: sabina,
+    alt: "Sabina Rai",
     text: "Affordable, durable, and beautiful—Paint Company delivered beyond our expectations.",
     rating: 4.8,
   },

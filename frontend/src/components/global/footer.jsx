@@ -1,7 +1,9 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { ArrowUp, Facebook, MessageCircle, Music } from "lucide-react"
+import { ArrowUp, Facebook, MessageCircle} from "lucide-react"
+import { SiTiktok } from "react-icons/si";
+import logo from "../../assets/logo.png"
 
 const Footer = () => {
   const [scrollProgress, setScrollProgress] = useState(0)
@@ -11,10 +13,33 @@ const Footer = () => {
   }
 
   const handleNavigation = (section) => {
-    const element = document.getElementById(section)
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth", block: "start" })
+    // Check if we're on the main page (home page)
+    if (window.location.pathname === '/') {
+      // Navigate to section on the same page
+      if (section === 'home') {
+        // For home section, scroll to top but leave space for navbar
+        window.scrollTo({ 
+          top: 0, 
+          behavior: "smooth" 
+        })
+      } else {
+        const element = document.getElementById(section)
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "start" })
+        }
+      }
+    } else {
+      // Navigate to home page with hash
+      if (section === 'home') {
+        window.location.href = '/'
+      } else {
+        window.location.href = `/#${section}`
+      }
     }
+  }
+
+  const handlePageNavigation = (path) => {
+    window.location.href = path
   }
 
   useEffect(() => {
@@ -70,16 +95,16 @@ const Footer = () => {
       </div>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white">
+      <footer className="bg-gray-600 text-white">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 py-16">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {/* Company Info */}
             <div className="space-y-6">
               <div>
                 <img
-                  src="/placeholder.svg?height=60&width=120&text=LOGO"
+                  src={logo}
                   alt="Paint Company Logo"
-                  className="h-12 w-auto mb-4"
+                  className="h-28 w-auto mb-4"
                 />
                 <p className="text-gray-300 font-light leading-relaxed">
                   Transforming spaces with premium quality paints and exceptional service for over 7 years.
@@ -90,7 +115,8 @@ const Footer = () => {
                   href="https://www.facebook.com/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-red-500 transition-colors duration-300"
+                  className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-blue-500 transition-colors duration-300"
+                  aria-label="Facebook"
                 >
                   <Facebook className="w-5 h-5" />
                 </a>
@@ -99,6 +125,7 @@ const Footer = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-green-500 transition-colors duration-300"
+                  aria-label="WhatsApp"
                 >
                   <MessageCircle className="w-5 h-5" />
                 </a>
@@ -107,8 +134,9 @@ const Footer = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-pink-500 transition-colors duration-300"
+                  aria-label="TikTok"
                 >
-                  <Music className="w-5 h-5" />
+                  <SiTiktok className="w-5 h-5" />
                 </a>
               </div>
             </div>
@@ -118,15 +146,15 @@ const Footer = () => {
               <h3 className="text-xl font-medium text-white">Quick Links</h3>
               <ul className="space-y-3">
                 {[
-                  { id: "home", label: "Home" },
-                  { id: "about", label: "About Us" },
-                  { id: "news", label: "News & Events" },
-                  { id: "contact", label: "Contact Us" },
+                  { id: "home", label: "Home", type: "section" },
+                  { id: "about", label: "About Us", type: "section" },
+                  { id: "news", label: "News & Events", type: "section" },
+                  { id: "contact", label: "Contact Us", type: "section" },
                 ].map((item) => (
                   <li key={item.id}>
                     <button
                       onClick={() => handleNavigation(item.id)}
-                      className="text-gray-300 hover:text-white font-light transition-colors duration-200 hover:translate-x-1 transform"
+                      className="text-gray-300 hover:text-white font-light transition-all duration-200 hover:translate-x-1 transform cursor-pointer"
                     >
                       {item.label}
                     </button>
@@ -140,14 +168,14 @@ const Footer = () => {
               <h3 className="text-xl font-medium text-white">Products</h3>
               <ul className="space-y-3">
                 {[
-                  { id: "products", label: "Paint Categories" },
-                  { id: "catalog", label: "Product Catalog" },
-                  { id: "location", label: "Find Our Store" },
-                ].map((item) => (
-                  <li key={item.id}>
+                  { id: "products", label: "Paint Categories", type: "section" },
+                  { path: "/products", label: "Product Catalog", type: "page" },
+                  { path: "/find-store", label: "Find Our Store", type: "page" },
+                ].map((item, index) => (
+                  <li key={item.id || index}>
                     <button
-                      onClick={() => handleNavigation(item.id)}
-                      className="text-gray-300 hover:text-white font-light transition-colors duration-200 hover:translate-x-1 transform"
+                      onClick={() => item.type === "section" ? handleNavigation(item.id) : handlePageNavigation(item.path)}
+                      className="text-gray-300 hover:text-white font-light transition-all duration-200 hover:translate-x-1 transform cursor-pointer"
                     >
                       {item.label}
                     </button>
@@ -189,14 +217,9 @@ const Footer = () => {
               <p className="text-gray-400 font-light text-sm">© 2025 Paint Company. All rights reserved.</p>
               <p className="text-gray-400 font-light text-sm">
                 Designed by{" "}
-                <a
-                  href="https://shresthamanoj.info.np/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-red-400 hover:text-red-300 transition-colors duration-200"
-                >
+                <span className="text-red-400">
                   MARSSL
-                </a>
+                </span>
               </p>
             </div>
           </div>

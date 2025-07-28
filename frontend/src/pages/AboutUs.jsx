@@ -2,13 +2,13 @@
 
 import { useEffect, useState, useRef } from "react"
 import { Award, Users, Briefcase } from "lucide-react"
+import icon from "../assets/AboutUs/icon.jpg"
 
 export default function AboutUs() {
   const [startCount, setStartCount] = useState(false)
-  const [showFullText, setShowFullText] = useState(false)
+  const [counts, setCounts] = useState({ years: 0, customers: 0, projects: 0 })
   const experienceRef = useRef(null)
   const hasCountedRef = useRef(false)
-  const [counts, setCounts] = useState({ years: 0, customers: 0, projects: 0 })
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -57,7 +57,7 @@ export default function AboutUs() {
     return () => clearInterval(timer)
   }
 
-  const paragraph = `Based in Itahari, Sunsari, Paint Company has been a trusted name in Nepal's paint industry for over 7 years, offering durable and eco-friendly paint solutions for homes, businesses, and industries. With a focus on innovation, sustainability, and customer satisfaction, we provide vibrant colors and quality finishes that protect and enhance every space. Backed by a strong local presence and a growing distribution network, Paint Company is committed to helping you transform your world with color and confidence.`
+  const paragraph = `Located in Itahari, Sunsari, Paint Company has been a trusted name in Nepal's paint industry for over seven years. We specialize in providing durable, eco-friendly paint solutions for homes, businesses, and industrial spaces. With a strong emphasis on innovation, sustainability, and customer satisfaction, our products deliver vibrant colors and long-lasting finishes that both protect and beautify. Supported by a robust local presence and an expanding distribution network, Paint Company is dedicated to helping you transform your surroundings with confidence and color.`
 
   return (
     <div className="py-24 bg-gray-50">
@@ -67,11 +67,11 @@ export default function AboutUs() {
           <div className="relative">
             <div className="relative rounded-3xl overflow-hidden shadow-2xl">
               <img
-                src="/src/assets/AboutUs/brush.jpeg"
+                src= {icon}
                 alt="Paint brush"
                 className="w-full h-96 lg:h-[500px] object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex items-end">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex items-center">
                 <div className="p-8 text-white">
                   <h2 className="text-2xl lg:text-3xl font-light mb-2">
                     <span className="text-red-400">"Paint Company:</span>
@@ -103,14 +103,8 @@ export default function AboutUs() {
                 About Our <span className="text-red-500 font-normal">Company</span>
               </h2>
               <p className="text-lg text-gray-600 font-light leading-relaxed">
-                {showFullText ? paragraph : `${paragraph.slice(0, 320)}...`}
+                {paragraph}
               </p>
-              <button
-                onClick={() => setShowFullText(!showFullText)}
-                className="text-red-500 hover:text-red-600 font-medium transition-colors duration-200"
-              >
-                {showFullText ? "See Less" : "See More"}
-              </button>
             </div>
 
             {/* Stats */}

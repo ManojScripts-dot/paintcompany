@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
 import { Menu, X } from "lucide-react"
+import logo from "../../assets/logo.png"
 
 export default function Navbar({ sectionRefs }) {
   const [activeItem, setActiveItem] = useState("Home")
@@ -107,9 +108,9 @@ export default function Navbar({ sectionRefs }) {
           <div className="flex-shrink-0">
             <a href="/" className="group">
               <img
-                src="/assets/logo.png"
+                src={logo}
                 alt="Paint Company"
-                className="h-8 w-auto transition-transform duration-200 group-hover:scale-105"
+                className="h-28 w-auto transition-transform duration-200 group-hover:scale-105"
               />
             </a>
           </div>
