@@ -63,7 +63,7 @@ const Home = () => {
   }
 
   return (
-    <div className="bg-gradient-to-br from-gray-50 to-white">
+    <div className="bg-gradient-to-br from-gray-50 to-white pt-20">
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-8 lg:py-16">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Content */}

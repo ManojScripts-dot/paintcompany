@@ -15,7 +15,6 @@ import SaveModal from "../../components/SaveModal";
 import ConfirmModal from "../../components/ConfirmModal";
 import React from "react";
 
-// ProductForm Component (Moved outside and memoized)
 const ProductForm = React.memo(
   ({ product, onFieldChange, onImageChange, onSave, onCancel, isNew = false, preview, error }) => {
     return (

@@ -124,55 +124,55 @@ const Footer = () => {
 
       {/* Footer */}
       <footer className="bg-gray-900 text-white">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 py-16">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 py-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Company Info */}
-            <div className="space-y-6">
+            <div className="space-y-4">
               <div>
                 <img
                   src={logo}
                   alt="Paint Company Logo"
-                  className="h-24 w-auto mb-4"
+                  className="h-20 w-auto mb-3"
                 />
-                <p className="text-gray-300 font-light leading-relaxed">
+                <p className="text-gray-300 font-light leading-relaxed text-sm">
                   Transforming spaces with premium quality paints and exceptional service for over 7 years.
                 </p>
               </div>
-              <div className="flex space-x-4">
+              <div className="flex space-x-3">
                 <a
                   href="https://www.facebook.com/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-blue-500 transition-colors duration-300"
+                  className="w-9 h-9 bg-gray-800 rounded-full flex items-center justify-center hover:bg-blue-500 transition-colors duration-300"
                   aria-label="Facebook"
                 >
-                  <Facebook className="w-5 h-5" />
+                  <Facebook className="w-4 h-4" />
                 </a>
                 <a
                   href="https://wa.me/+9779800000000"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-green-500 transition-colors duration-300"
+                  className="w-9 h-9 bg-gray-800 rounded-full flex items-center justify-center hover:bg-green-500 transition-colors duration-300"
                   aria-label="WhatsApp"
                 >
-                  <MessageCircle className="w-5 h-5" />
+                  <MessageCircle className="w-4 h-4" />
                 </a>
                 <a
                   href="https://www.tiktok.com/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-pink-500 transition-colors duration-300"
+                  className="w-9 h-9 bg-gray-800 rounded-full flex items-center justify-center hover:bg-pink-500 transition-colors duration-300"
                   aria-label="TikTok"
                 >
-                  <SiTiktok className="w-5 h-5" />
+                  <SiTiktok className="w-4 h-4" />
                 </a>
               </div>
             </div>
 
             {/* Quick Links */}
-            <div className="space-y-6">
-              <h3 className="text-xl font-medium text-white">Quick Links</h3>
-              <ul className="space-y-3">
+            <div className="space-y-4">
+              <h3 className="text-lg font-medium text-white">Quick Links</h3>
+              <ul className="space-y-2">
                 {[
                   { id: "home", label: "Home", type: "section" },
                   { id: "about", label: "About Us", type: "section" },
@@ -182,7 +182,7 @@ const Footer = () => {
                   <li key={item.id}>
                     <button
                       onClick={() => handleNavigation(item.id)}
-                      className="text-gray-300 hover:text-white font-light transition-all duration-200 hover:translate-x-1 transform cursor-pointer"
+                      className="text-gray-300 hover:text-white font-light transition-all duration-200 hover:translate-x-1 transform cursor-pointer text-sm"
                     >
                       {item.label}
                     </button>
@@ -192,9 +192,9 @@ const Footer = () => {
             </div>
 
             {/* Products */}
-            <div className="space-y-6">
-              <h3 className="text-xl font-medium text-white">Products</h3>
-              <ul className="space-y-3">
+            <div className="space-y-4">
+              <h3 className="text-lg font-medium text-white">Products</h3>
+              <ul className="space-y-2">
                 {[
                   { id: "products", label: "Paint Categories", type: "section" },
                   { path: "/products", label: "Product Catalog", type: "page" },
@@ -203,7 +203,7 @@ const Footer = () => {
                   <li key={item.id || index}>
                     <button
                       onClick={() => item.type === "section" ? handleNavigation(item.id) : handlePageNavigation(item.path)}
-                      className="text-gray-300 hover:text-white font-light transition-all duration-200 hover:translate-x-1 transform cursor-pointer"
+                      className="text-gray-300 hover:text-white font-light transition-all duration-200 hover:translate-x-1 transform cursor-pointer text-sm"
                     >
                       {item.label}
                     </button>
@@ -213,24 +213,24 @@ const Footer = () => {
             </div>
 
             {/* Contact Info */}
-            <div className="space-y-6">
-              <h3 className="text-xl font-medium text-white">Contact Info</h3>
-              <div className="space-y-4">
+            <div className="space-y-3">
+              <h3 className="text-lg font-medium text-white">Contact Info</h3>
+              <div className="space-y-3">
                 <div>
-                  <p className="text-gray-300 font-light">Corporate Office:</p>
-                  <p className="text-white">Itahari, Sunsari, Nepal</p>
+                  <p className="text-gray-300 font-light text-sm">Corporate Office:</p>
+                  <p className="text-white text-sm">Itahari, Sunsari, Nepal</p>
                 </div>
                 <div>
-                  <p className="text-gray-300 font-light">Phone:</p>
-                  <a href="tel:+9779800000000" className="text-white hover:text-red-400 transition-colors duration-200">
+                  <p className="text-gray-300 font-light text-sm">Phone:</p>
+                  <a href="tel:+9779800000000" className="text-white hover:text-red-400 transition-colors duration-200 text-sm">
                     +977 9800000000
                   </a>
                 </div>
                 <div>
-                  <p className="text-gray-300 font-light">Email:</p>
+                  <p className="text-gray-300 font-light text-sm">Email:</p>
                   <a
                     href="mailto:paintcompany@gmail.com"
-                    className="text-white hover:text-red-400 transition-colors duration-200"
+                    className="text-white hover:text-red-400 transition-colors duration-200 text-sm"
                   >
                     paintcompany@gmail.com
                   </a>
@@ -240,8 +240,8 @@ const Footer = () => {
           </div>
 
           {/* Bottom Bar */}
-          <div className="border-t border-gray-800 mt-12 pt-8">
-            <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+          <div className="border-t border-gray-800 mt-8 pt-6">
+            <div className="flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
               <p className="text-gray-400 font-light text-sm">© 2025 Paint Company. All rights reserved.</p>
               <p className="text-gray-400 font-light text-sm">
                 Designed by{" "}

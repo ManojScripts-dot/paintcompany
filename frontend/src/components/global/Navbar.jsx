@@ -30,14 +30,47 @@ export default function Navbar({ sectionRefs }) {
     setActiveItem(activeMenuItem?.id || "Home")
   }, [location.pathname])
 
-  // Handle scroll effect
+  // Scroll-based section detection
   useEffect(() => {
+    if (location.pathname !== "/") return // Only run on homepage
+
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20)
+      const scrollPosition = window.scrollY + 100 // Reduced offset for smaller navbar
+
+      // Check each section to see which one is currently in view
+      for (const item of menuItems) {
+        if (item.section && sectionRefs[item.section]?.current) {
+          const element = sectionRefs[item.section].current
+          const offsetTop = element.offsetTop
+          const offsetBottom = offsetTop + element.offsetHeight
+
+          if (scrollPosition >= offsetTop && scrollPosition < offsetBottom) {
+            setActiveItem(item.id)
+            break
+          }
+        }
+      }
+
+      // Handle special case for top of page (Home section)
+      if (scrollPosition < 80) {
+        setActiveItem("Home")
+      }
     }
 
     window.addEventListener("scroll", handleScroll)
+    handleScroll() // Run once on mount
+
     return () => window.removeEventListener("scroll", handleScroll)
+  }, [location.pathname, sectionRefs])
+
+  // Handle scroll effect for navbar background
+  useEffect(() => {
+    const handleNavbarScroll = () => {
+      setScrolled(window.scrollY > 20)
+    }
+
+    window.addEventListener("scroll", handleNavbarScroll)
+    return () => window.removeEventListener("scroll", handleNavbarScroll)
   }, [])
 
   // Handle click outside to close mobile menu
@@ -97,79 +130,84 @@ export default function Navbar({ sectionRefs }) {
   }
 
   return (
-    <nav
-      className={`sticky top-0 z-50 transition-all duration-300 ${
-        scrolled ? "bg-white/95 backdrop-blur-md shadow-lg" : "bg-white"
-      } border-b border-gray-100`}
-    >
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="flex justify-between items-center py-4">
-          {/* Logo */}
-          <div className="flex-shrink-0">
-            <a href="/" className="group">
-              <img
-                src={logo}
-                alt="Paint Company"
-                className="h-28 w-auto transition-transform duration-200 group-hover:scale-105"
-              />
-            </a>
-          </div>
-
-          {/* Desktop Menu */}
-          <div className="hidden lg:flex items-center space-x-8">
-            {menuItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => handleClick(item)}
-                className={`relative px-4 py-2 text-sm font-medium transition-all duration-200 ${
-                  activeItem === item.id ? "text-red-500" : "text-gray-700 hover:text-red-500"
-                } group`}
-                aria-current={activeItem === item.id ? "page" : undefined}
-              >
-                {item.label}
-                {activeItem === item.id && (
-                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-red-500 rounded-full"></div>
-                )}
-                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-red-500 rounded-full scale-x-0 group-hover:scale-x-100 transition-transform duration-200"></div>
-              </button>
-            ))}
-          </div>
-
-          {/* Mobile Menu Button */}
-          <button
-            onClick={toggleMenu}
-            className="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200"
-            aria-label={isMenuOpen ? "Close navigation menu" : "Open navigation menu"}
-          >
-            {isMenuOpen ? <X className="w-6 h-6 text-gray-700" /> : <Menu className="w-6 h-6 text-gray-700" />}
-          </button>
-        </div>
-
-        {/* Mobile Menu */}
-        {isMenuOpen && (
-          <>
-            <div className="fixed inset-0 bg-black/50 z-40 lg:hidden" onClick={toggleMenu} />
-            <div className="absolute top-full left-0 right-0 bg-white shadow-xl border-t border-gray-100 z-50 lg:hidden">
-              <div className="px-6 py-4 space-y-2">
-                {menuItems.map((item) => (
-                  <button
-                    key={item.id}
-                    onClick={() => handleClick(item)}
-                    className={`block w-full text-left px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${
-                      activeItem === item.id
-                        ? "text-red-500 bg-red-50"
-                        : "text-gray-700 hover:text-red-500 hover:bg-gray-50"
-                    }`}
-                    aria-current={activeItem === item.id ? "page" : undefined}
-                  >
-                    {item.label}
-                  </button>
-                ))}
-              </div>
+    <>
+      {/* Spacer reduced to match new navbar height */}
+      <div className="h-12"></div>
+      
+      <nav
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+          scrolled ? "bg-white/95 backdrop-blur-md shadow-lg" : "bg-white"
+        } border-b border-gray-100`}
+      >
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="flex justify-between items-center py-2">
+            {/* Logo - reduced size */}
+            <div className="flex-shrink-0">
+              <a href="/" className="group">
+                <img
+                  src={logo}
+                  alt="Paint Company"
+                  className="h-16 w-auto transition-transform duration-200 group-hover:scale-105"
+                />
+              </a>
             </div>
-          </>
-        )}
-      </div>
-    </nav>
+
+            {/* Desktop Menu */}
+            <div className="hidden lg:flex items-center space-x-6">
+              {menuItems.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => handleClick(item)}
+                  className={`relative px-3 py-1 text-sm font-medium transition-all duration-200 ${
+                    activeItem === item.id ? "text-red-500" : "text-gray-700 hover:text-red-500"
+                  } group`}
+                  aria-current={activeItem === item.id ? "page" : undefined}
+                >
+                  {item.label}
+                  {activeItem === item.id && (
+                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-red-500 rounded-full"></div>
+                  )}
+                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-red-500 rounded-full scale-x-0 group-hover:scale-x-100 transition-transform duration-200"></div>
+                </button>
+              ))}
+            </div>
+
+            {/* Mobile Menu Button */}
+            <button
+              onClick={toggleMenu}
+              className="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200"
+              aria-label={isMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+            >
+              {isMenuOpen ? <X className="w-5 h-5 text-gray-700" /> : <Menu className="w-5 h-5 text-gray-700" />}
+            </button>
+          </div>
+
+          {/* Mobile Menu */}
+          {isMenuOpen && (
+            <>
+              <div className="fixed inset-0 bg-black/50 z-40 lg:hidden" onClick={toggleMenu} />
+              <div className="absolute top-full left-0 right-0 bg-white shadow-xl border-t border-gray-100 z-50 lg:hidden">
+                <div className="px-6 py-4 space-y-2">
+                  {menuItems.map((item) => (
+                    <button
+                      key={item.id}
+                      onClick={() => handleClick(item)}
+                      className={`block w-full text-left px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${
+                        activeItem === item.id
+                          ? "text-red-500 bg-red-50"
+                          : "text-gray-700 hover:text-red-500 hover:bg-gray-50"
+                      }`}
+                      aria-current={activeItem === item.id ? "page" : undefined}
+                    >
+                      {item.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      </nav>
+    </>
   )
 }

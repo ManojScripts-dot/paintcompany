@@ -107,7 +107,7 @@ export default function NewArrival() {
                   <img
                     src={displayArrival.image || "/placeholder.svg"}
                     alt={displayArrival.name || "New Arrival"}
-                    className="w-full h-64 object-contain"
+                    className="w-full h-full object-contain"
                     onError={(e) => {
                       e.target.src = "/placeholder.svg?height=300&width=300&text=New+Product"
                     }}

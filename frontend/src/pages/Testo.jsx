@@ -146,7 +146,6 @@ export default function TestimonialSliderExact() {
                 />
                 <div>
                   <div className="font-semibold text-gray-900">{testimonial.name}</div>
-                  <div className="text-sm text-gray-600">Verified Customer</div>
                 </div>
               </div>
             </div>
