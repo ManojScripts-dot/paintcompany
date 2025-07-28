@@ -7,7 +7,9 @@ import {
   Trash2,
   RefreshCw,
   X,
-  Image as ImageIcon,
+  Upload,
+  Calendar,
+  AlertTriangle,
 } from "lucide-react";
 import axios from "axios";
 import DeleteModal from "../../components/DeleteModal";
@@ -18,22 +20,20 @@ import React from "react";
 const ProductForm = React.memo(
   ({ product, onFieldChange, onImageChange, onSave, onCancel, isNew = false, preview, error }) => {
     return (
-      <div className="bg-white rounded-lg shadow p-6 mb-6">
-        <h3 className="text-lg font-medium text-gray-800 mb-4">
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 mb-8">
+        <h3 className="text-2xl font-semibold text-gray-900 mb-6">
           {isNew ? "Add New Product" : "Edit Product"}
         </h3>
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl flex items-center">
+            <AlertTriangle className="h-5 w-5 mr-3 flex-shrink-0" />
             {error}
           </div>
         )}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <div className="mb-4">
-              <label
-                htmlFor="name"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="space-y-6">
+            <div>
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
                 Product Name *
               </label>
               <input
@@ -41,17 +41,16 @@ const ProductForm = React.memo(
                 id="name"
                 value={product.name}
                 onChange={(e) => onFieldChange("name", e.target.value)}
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm border p-2"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors"
+                placeholder="Enter product name"
                 required
                 autoComplete="off"
                 aria-required="true"
               />
             </div>
-            <div className="mb-4">
-              <label
-                htmlFor="description"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
+            
+            <div>
+              <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
                 Description *
               </label>
               <textarea
@@ -59,17 +58,16 @@ const ProductForm = React.memo(
                 value={product.description}
                 onChange={(e) => onFieldChange("description", e.target.value)}
                 rows={4}
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm border p-2"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors resize-none"
+                placeholder="Enter product description"
                 required
                 autoComplete="off"
                 aria-required="true"
               />
             </div>
-            <div className="mb-4">
-              <label
-                htmlFor="date"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
+            
+            <div>
+              <label htmlFor="date" className="block text-sm font-medium text-gray-700 mb-2">
                 Release Date *
               </label>
               <input
@@ -77,98 +75,79 @@ const ProductForm = React.memo(
                 id="date"
                 value={product.date}
                 onChange={(e) => onFieldChange("date", e.target.value)}
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm border p-2"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors"
                 required
                 aria-required="true"
               />
             </div>
           </div>
+
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Product Image {isNew ? "*" : ""}
             </label>
-            <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-              <div className="space-y-1 text-center">
-                {preview ? (
-                  <div className="relative">
-                    <img
-                      src={preview}
-                      alt="Product preview"
-                      className="mx-auto h-64 w-auto object-cover rounded-md"
-                      onError={(e) =>
-                        console.error("Preview image load error:", preview)
-                      }
-                      onLoad={() => console.log("Preview image loaded:", preview)}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => {
-                        onFieldChange("image", null);
-                        onImageChange({ target: { files: [] } });
-                      }}
-                      className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
-                    >
-                      <X size={16} />
-                    </button>
-                  </div>
-                ) : (
-                  <>
-                    <svg
-                      className="mx-auto h-12 w-12 text-gray-400"
-                      stroke="currentColor"
-                      fill="none"
-                      viewBox="0 0 48 48"
-                      aria-hidden="true"
-                    >
-                      <path
-                        d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                        strokeWidth={2}
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
+            <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-red-400 transition-colors">
+              {preview ? (
+                <div className="relative">
+                  <img
+                    src={preview}
+                    alt="Product preview"
+                    className="mx-auto h-64 w-auto object-cover rounded-lg"
+                    onError={(e) => {
+                      console.error("Preview image load error:", preview);
+                      e.currentTarget.src = "/placeholder.svg?height=200&width=200&text=Product";
+                      e.currentTarget.onerror = null;
+                    }}
+                    onLoad={() => console.log("Preview image loaded:", preview)}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onFieldChange("image", null);
+                      onImageChange({ target: { files: [] } });
+                    }}
+                    className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <Upload className="mx-auto h-12 w-12 text-gray-400" />
+                  <div>
+                    <label className="cursor-pointer bg-red-500 text-white rounded-lg px-6 py-3 font-medium hover:bg-red-600 transition-colors inline-block">
+                      Upload Image {isNew ? "*" : ""}
+                      <input
+                        type="file"
+                        className="sr-only"
+                        accept="image/png,image/jpeg,image/jpg,image/gif"
+                        onChange={onImageChange}
+                        required={isNew}
+                        aria-required={isNew ? "true" : "false"}
                       />
-                    </svg>
-                    <div className="flex text-sm text-gray-600">
-                      <label
-                        htmlFor="file-upload"
-                        className="relative cursor-pointer bg-white rounded-md font-medium text-purple-600 hover:text-purple-700"
-                      >
-                        <span>Upload a file</span>
-                        <input
-                          id="file-upload"
-                          name="file-upload"
-                          type="file"
-                          className="sr-only"
-                          accept="image/png,image/jpeg,image/jpg,image/gif"
-                          onChange={onImageChange}
-                          required={isNew}
-                          aria-required={isNew ? "true" : "false"}
-                        />
-                      </label>
-                      <p className="pl-1">or drag and drop</p>
-                    </div>
-                    <p className="text-xs text-gray-500">
-                      PNG, JPG, GIF up to 10MB
-                    </p>
-                  </>
-                )}
-              </div>
+                    </label>
+                    <p className="text-sm text-gray-500 mt-2">PNG, JPG, GIF up to 10MB</p>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
-        <div className="flex justify-end space-x-3 mt-6">
+        
+        <div className="flex justify-end space-x-4 mt-8">
           <button
             type="button"
             onClick={onCancel}
-            className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+            className="px-6 py-3 border border-gray-300 rounded-xl text-gray-700 font-medium hover:bg-gray-50 transition-colors"
           >
             Cancel
           </button>
           <button
             type="button"
             onClick={onSave}
-            className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-500 hover:bg-red-600"
+            className="px-6 py-3 bg-red-500 text-white rounded-xl font-medium hover:bg-red-600 transition-colors"
           >
-            Save
+            Save Product
           </button>
         </div>
       </div>
@@ -200,7 +179,7 @@ export default function NewArrivalsManager() {
 
   // Normalize image URLs
   const getImageUrl = (imageUrl) => {
-    if (!imageUrl) return "/placeholder.svg";
+    if (!imageUrl) return "/placeholder.svg?height=200&width=300&text=Product";
     if (imageUrl.startsWith("http://") || imageUrl.startsWith("https://"))
       return imageUrl;
     if (imageUrl.startsWith("/static/")) return `${API_BASE_URL}${imageUrl}`;
@@ -535,82 +514,77 @@ export default function NewArrivalsManager() {
 
   // Render
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-800">
-          New Arrivals Manager
-        </h1>
-        <div className="flex space-x-3">
-          {!isLoading && !error && (
+    <div className="min-h-screen bg-gray-50 p-6">
+      <div className="max-w-7xl mx-auto space-y-8">
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">New Arrivals</h1>
+            <p className="text-gray-600 mt-1">Showcase your latest paint products</p>
+          </div>
+          <div className="flex space-x-3">
+            {!isLoading && !error && (
+              <button
+                onClick={fetchProducts}
+                className="px-4 py-2 bg-gray-600 text-white rounded-xl hover:bg-gray-700 transition-colors flex items-center"
+              >
+                <RefreshCw size={16} className="mr-2" /> Refresh
+              </button>
+            )}
             <button
-              onClick={fetchProducts}
-              className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors flex items-center"
+              onClick={handleAddNew}
+              disabled={isAddingNew || editingId !== null}
+              className="px-6 py-3 bg-red-500 text-white rounded-xl hover:bg-red-600 transition-colors flex items-center disabled:opacity-50 disabled:cursor-not-allowed font-medium"
             >
-              <RefreshCw size={16} className="mr-1" /> Refresh
+              <Plus size={16} className="mr-2" />
+              Add Product
             </button>
-          )}
-          <button
-            onClick={handleAddNew}
-            disabled={isAddingNew || editingId !== null}
-            className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <Plus size={16} className="mr-1" /> Add New Product
-          </button>
+          </div>
         </div>
-      </div>
 
-      {error && !isAddingNew && !editingId && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-          {error}
-        </div>
-      )}
+        {error && !isAddingNew && !editingId && (
+          <div className="bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-xl flex items-center">
+            <AlertTriangle className="h-5 w-5 mr-3 flex-shrink-0" />
+            <span>{error}</span>
+          </div>
+        )}
 
-      {(isAddingNew || editingId !== null) && (
-        <ProductForm
-          key={editingId || "new"} // Ensure stable key
-          product={newProduct}
-          onFieldChange={handleFieldChange}
-          onImageChange={handleImageChange}
-          onSave={isAddingNew ? handleSaveNew : handleSaveEdit}
-          onCancel={handleCancel}
-          isNew={isAddingNew}
-          preview={imagePreview}
-          error={error}
-        />
-      )}
+        {(isAddingNew || editingId !== null) && (
+          <ProductForm
+            key={editingId || "new"} // Ensure stable key
+            product={newProduct}
+            onFieldChange={handleFieldChange}
+            onImageChange={handleImageChange}
+            onSave={isAddingNew ? handleSaveNew : handleSaveEdit}
+            onCancel={handleCancel}
+            isNew={isAddingNew}
+            preview={imagePreview}
+            error={error}
+          />
+        )}
 
-      {isLoading ? (
-        <div className="flex justify-center items-center py-12">
-          <RefreshCw className="h-8 w-8 text-purple-600 animate-spin" />
-          <span className="ml-2 text-gray-600">Loading products...</span>
-        </div>
-      ) : products.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {products.map((product) =>
-            editingId === product.id ? (
-              <ProductForm
-                key={product.id}
-                product={newProduct}
-                onFieldChange={handleFieldChange}
-                onImageChange={handleImageChange}
-                onSave={handleSaveEdit}
-                onCancel={handleCancel}
-                preview={imagePreview}
-                error={error}
-              />
-            ) : (
+        {isLoading ? (
+          <div className="flex justify-center items-center py-20">
+            <div className="text-center">
+              <RefreshCw className="h-8 w-8 text-red-500 animate-spin mx-auto" />
+              <p className="text-gray-600 mt-4">Loading products...</p>
+            </div>
+          </div>
+        ) : products.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {products.map((product) => (
               <div
                 key={product.id}
-                className="bg-white rounded-lg shadow overflow-hidden"
+                className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow"
               >
                 <div className="h-48 overflow-hidden">
                   <img
-                    src={product.imageUrl || "/placeholder.svg"}
+                    src={product.imageUrl}
                     alt={product.name}
                     className="w-full h-full object-cover"
                     onError={(e) => {
                       console.error("Product image load error:", product.imageUrl);
-                      e.currentTarget.src = "/placeholder.svg";
+                      e.currentTarget.src = "/placeholder.svg?height=200&width=300&text=Product";
+                      e.currentTarget.onerror = null;
                     }}
                     onLoad={() =>
                       console.log("Product image loaded:", product.imageUrl)
@@ -618,73 +592,73 @@ export default function NewArrivalsManager() {
                   />
                 </div>
                 <div className="p-6">
-                  <h2 className="text-lg font-medium text-gray-800 mb-2">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
                     {product.name}
-                  </h2>
-                  <p className="text-sm text-gray-500 mb-4">
-                    Released on {formatDate(product.date)}
-                  </p>
+                  </h3>
+                  <div className="flex items-center text-sm text-gray-500 mb-3">
+                    <Calendar className="h-4 w-4 mr-1" />
+                    <span>Released on {formatDate(product.date)}</span>
+                  </div>
                   <p className="text-gray-700 mb-4 line-clamp-3">
                     {product.description}
                   </p>
                   <div className="flex justify-end space-x-2">
                     <button
                       onClick={() => handleEdit(product.id)}
-                      className="text-gray-600 hover:text-gray-900"
+                      className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                       title="Edit"
                       aria-label={`Edit ${product.name}`}
                     >
-                      <Edit2 className="h-5 w-5" />
+                      <Edit2 className="h-4 w-4" />
                     </button>
                     <button
                       onClick={() => handleDelete(product.id)}
-                      className="text-red-600 hover:text-red-900"
+                      className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                       title="Delete"
                       aria-label={`Delete ${product.name}`}
                     >
-                      <Trash2 className="h-5 w-5" />
+                      <Trash2 className="h-4 w-4" />
                     </button>
                   </div>
                 </div>
               </div>
-            )
-          )}
-        </div>
-      ) : (
-        <div className="bg-white rounded-lg shadow p-12 text-center">
-          <ImageIcon className="h-12 w-12 text-gray-400 mx-auto" />
-          <h3 className="mt-2 text-lg font-medium text-gray-900">No products</h3>
-          <p className="mt-1 text-gray-500">
-            Get started by adding a new product.
-          </p>
-          <div className="mt-6">
+            ))}
+          </div>
+        ) : (
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-12 text-center">
+            <Upload className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+            <h3 className="text-xl font-medium text-gray-900 mb-2">No products</h3>
+            <p className="text-gray-600 mb-6">Get started by adding your first new arrival.</p>
             <button
               onClick={handleAddNew}
-              className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors inline-flex items-center"
+              className="px-6 py-3 bg-red-500 text-white rounded-xl hover:bg-red-600 transition-colors inline-flex items-center font-medium"
             >
-              <Plus size={16} className="mr-1" /> Add New Product
+              <Plus size={16} className="mr-2" />
+              Add Product
             </button>
           </div>
-        </div>
-      )}
-      <DeleteModal
-        isOpen={modalState.delete}
-        onConfirm={handleConfirmDelete}
-        onCancel={() =>
-          setModalState((prev) => ({ ...prev, delete: false, deleteId: null }))
-        }
-      />
-      <SaveModal
-        isOpen={modalState.save}
-        onClose={() => setModalState((prev) => ({ ...prev, save: false }))}
-      />
-      <ConfirmModal
-        isOpen={modalState.confirm}
-        onConfirm={handleConfirmSave}
-        onCancel={() =>
-          setModalState((prev) => ({ ...prev, confirm: false }))
-        }
-      />
+        )}
+        
+        <DeleteModal
+          isOpen={modalState.delete}
+          onConfirm={handleConfirmDelete}
+          onCancel={() =>
+            setModalState((prev) => ({ ...prev, delete: false, deleteId: null }))
+          }
+        />
+        <SaveModal
+          isOpen={modalState.save}
+          onClose={() => setModalState((prev) => ({ ...prev, save: false }))}
+          message="Product saved successfully! ✅"
+        />
+        <ConfirmModal
+          isOpen={modalState.confirm}
+          onConfirm={handleConfirmSave}
+          onCancel={() =>
+            setModalState((prev) => ({ ...prev, confirm: false }))
+          }
+        />
+      </div>
     </div>
   );
 }

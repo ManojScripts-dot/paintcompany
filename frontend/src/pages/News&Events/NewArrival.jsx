@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Star, Loader2, Package } from "lucide-react"
+import { Star, Package } from "lucide-react"
 import axios from "axios"
 
 export default function NewArrival() {
@@ -73,13 +73,61 @@ export default function NewArrival() {
     image: "/placeholder.svg?height=400&width=400&text=New+Product",
   }
 
+  // Skeleton Loading Component
+  const SkeletonLoader = () => (
+    <div className="space-y-8">
+      {/* Header Skeleton */}
+      <div className="space-y-4">
+        <div className="flex items-center space-x-2">
+          <div className="h-9 lg:h-12 bg-gray-200 rounded-lg animate-pulse w-20"></div>
+          <div className="h-9 lg:h-12 bg-red-200 rounded-lg animate-pulse w-24"></div>
+        </div>
+        <div className="h-5 lg:h-6 bg-gray-200 rounded-lg animate-pulse w-80 max-w-full"></div>
+      </div>
+
+      {/* Product Showcase Skeleton */}
+      <div className="bg-gradient-to-br from-red-50 to-white rounded-3xl p-8 lg:p-12 shadow-lg">
+        <div className="grid lg:grid-cols-2 gap-8 items-center">
+          {/* Image Skeleton */}
+          <div className="relative">
+            <div className="absolute -top-4 -left-4 bg-red-200 rounded-full animate-pulse w-14 h-7"></div>
+            <div className="bg-white rounded-2xl p-8 shadow-lg">
+              <div className="w-full aspect-square bg-gray-200 rounded-xl animate-pulse"></div>
+            </div>
+          </div>
+
+          {/* Product Info Skeleton */}
+          <div className="space-y-6">
+            <div className="space-y-4">
+              {/* Title Skeleton */}
+              <div className="space-y-2">
+                <div className="h-7 lg:h-8 bg-gray-200 rounded-lg animate-pulse w-4/5"></div>
+                <div className="h-7 lg:h-8 bg-gray-200 rounded-lg animate-pulse w-3/5"></div>
+              </div>
+              
+              {/* Description Skeleton */}
+              <div className="space-y-2 pt-2">
+                <div className="h-4 lg:h-5 bg-gray-200 rounded animate-pulse w-full"></div>
+                <div className="h-4 lg:h-5 bg-gray-200 rounded animate-pulse w-11/12"></div>
+                <div className="h-4 lg:h-5 bg-gray-200 rounded animate-pulse w-3/4"></div>
+              </div>
+            </div>
+
+            {/* Release Date Skeleton */}
+            <div className="flex items-center gap-3 pt-2">
+              <div className="w-5 h-5 bg-gray-200 rounded animate-pulse"></div>
+              <div className="h-4 bg-gray-200 rounded animate-pulse w-40"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+
   return (
     <div className="w-full">
       {loading ? (
-        <div className="flex items-center justify-center py-12">
-          <Loader2 className="w-8 h-8 text-red-500 animate-spin" />
-          <span className="ml-3 text-gray-600 font-light">Loading new arrival...</span>
-        </div>
+        <SkeletonLoader />
       ) : error ? (
         <div className="bg-red-50 border border-red-200 rounded-2xl p-6">
           <p className="text-red-600 font-light">{error}</p>
@@ -135,7 +183,6 @@ export default function NewArrival() {
                     })}
                   </span>
                 </div>
-
               </div>
             </div>
           </div>

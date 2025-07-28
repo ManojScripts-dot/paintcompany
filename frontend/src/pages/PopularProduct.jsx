@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Star, Umbrella, Hammer, Leaf, Loader2 } from "lucide-react"
+import { Star, Umbrella, Hammer, Leaf } from "lucide-react"
 import axios from "axios"
 
 const PopularProduct = () => {
@@ -125,17 +125,91 @@ const PopularProduct = () => {
     return stars
   }
 
-  if (loading) {
-    return (
-      <section className="py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="flex items-center justify-center py-20">
-            <Loader2 className="w-8 h-8 text-red-500 animate-spin" />
-            <span className="ml-3 text-gray-600 font-light">Loading featured product...</span>
+  // Skeleton Loading Component
+  const SkeletonLoader = () => (
+    <section className="py-24 bg-white">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+        {/* Header Skeleton */}
+        <div className="text-center mb-20">
+          <div className="inline-flex items-center gap-2 bg-red-100 px-4 py-2 rounded-full mb-6">
+            <div className="w-4 h-4 bg-red-200 rounded animate-pulse"></div>
+            <div className="h-4 bg-red-200 rounded animate-pulse w-28"></div>
+          </div>
+          <div className="space-y-4 mb-6">
+            <div className="flex items-center justify-center gap-2">
+              <div className="h-12 lg:h-16 bg-gray-200 rounded-lg animate-pulse w-32"></div>
+              <div className="h-12 lg:h-16 bg-red-200 rounded-lg animate-pulse w-28"></div>
+            </div>
+          </div>
+          <div className="space-y-2">
+            <div className="h-5 bg-gray-200 rounded animate-pulse w-96 max-w-full mx-auto"></div>
+            <div className="h-5 bg-gray-200 rounded animate-pulse w-80 max-w-full mx-auto"></div>
           </div>
         </div>
-      </section>
-    )
+
+        {/* Product Showcase Skeleton */}
+        <div className="bg-gradient-to-br from-gray-50 to-white rounded-3xl overflow-hidden shadow-2xl">
+          <div className="grid lg:grid-cols-2 gap-0">
+            {/* Product Image Skeleton */}
+            <div className="relative bg-gradient-to-br from-red-50 to-white p-12 flex items-center justify-center">
+              <div className="relative">
+                <div className="absolute -top-4 -right-4 w-16 h-16 bg-red-200 rounded-full animate-pulse"></div>
+                <div className="w-80 h-80 bg-gray-200 rounded-2xl animate-pulse"></div>
+              </div>
+            </div>
+
+            {/* Product Details Skeleton */}
+            <div className="p-12 flex flex-col justify-center space-y-8">
+              <div className="space-y-6">
+                {/* Type and Name Skeleton */}
+                <div className="space-y-2">
+                  <div className="h-5 bg-red-200 rounded animate-pulse w-32"></div>
+                  <div className="space-y-2">
+                    <div className="h-8 lg:h-10 bg-gray-200 rounded animate-pulse w-4/5"></div>
+                    <div className="h-8 lg:h-10 bg-gray-200 rounded animate-pulse w-3/5"></div>
+                  </div>
+                </div>
+
+                {/* Description Skeleton */}
+                <div className="space-y-2">
+                  <div className="h-5 bg-gray-200 rounded animate-pulse w-full"></div>
+                  <div className="h-5 bg-gray-200 rounded animate-pulse w-11/12"></div>
+                  <div className="h-5 bg-gray-200 rounded animate-pulse w-4/5"></div>
+                </div>
+
+                {/* Rating Skeleton */}
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-1">
+                    {[1, 2, 3, 4, 5].map((i) => (
+                      <div key={i} className="w-5 h-5 bg-yellow-200 rounded animate-pulse"></div>
+                    ))}
+                  </div>
+                  <div className="h-6 bg-gray-200 rounded animate-pulse w-12"></div>
+                  <div className="h-4 bg-gray-200 rounded animate-pulse w-24"></div>
+                </div>
+
+                {/* Features Skeleton */}
+                <div className="space-y-4">
+                  <div className="h-5 bg-gray-200 rounded animate-pulse w-28"></div>
+                  <div className="space-y-3">
+                    {[1, 2, 3].map((i) => (
+                      <div key={i} className="flex items-center gap-3">
+                        <div className="w-5 h-5 bg-red-200 rounded animate-pulse"></div>
+                        <div className="h-4 bg-gray-200 rounded animate-pulse w-32"></div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+
+  if (loading) {
+    return <SkeletonLoader />
   }
 
   return (
