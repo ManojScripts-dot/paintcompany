@@ -45,6 +45,9 @@ const ProductCard = memo(({ product, categoryName, index = 0 }) => {
   const [imageError, setImageError] = useState(false)
   const [cardRef, isIntersecting, hasIntersected] = useIntersectionObserver()
 
+  // Show all prices in 2-column grid - no limiting
+  const priceEntries = Object.entries(product.prices).filter(([size, price]) => price)
+
   return (
     <div
       ref={cardRef}
@@ -82,41 +85,73 @@ const ProductCard = memo(({ product, categoryName, index = 0 }) => {
         />
 
         {/* Category Badge */}
-        <div className="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-medium">
+        <div className="absolute top-2 sm:top-4 left-2 sm:left-4 bg-red-500 text-white px-2 sm:px-3 py-1 rounded-full text-xs font-medium">
           {categoryName}
         </div>
       </div>
 
-      <div className="p-6 flex-1 flex flex-col space-y-4">
-        <div className="space-y-2">
-          <h3 className="font-medium text-lg text-gray-900 line-clamp-2">{product.name}</h3>
+      <div className="p-4 sm:p-6 flex-1 flex flex-col space-y-3 sm:space-y-4">
+        <div className="space-y-1 sm:space-y-2">
+          <h3 className="font-medium text-sm sm:text-lg text-gray-900 line-clamp-2">{product.name}</h3>
 
           {product.features && product.features.length > 0 && (
-            <p className="text-sm text-gray-600 line-clamp-2">
+            <p className="text-xs sm:text-sm text-gray-600 line-clamp-2">
               <span className="font-medium">Features:</span> {product.features.join(", ")}
             </p>
           )}
         </div>
 
-        <div className="mt-auto space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Available Sizes & Prices:</h4>
-          <div className="flex flex-wrap gap-2">
-            {Object.entries(product.prices).length > 0 ? (
-              Object.entries(product.prices).map(([size, price]) =>
-                price ? (
-                  <div
-                    key={size}
-                    className="bg-gray-50 hover:bg-red-50 px-3 py-2 rounded-lg text-sm transition-colors cursor-pointer"
-                  >
-                    <span className="font-medium text-gray-700">{size.toUpperCase()}:</span>
-                    <span className="text-red-600 font-semibold ml-1">{price}</span>
+        <div className="mt-auto space-y-2 sm:space-y-3">
+          <h4 className="text-xs sm:text-sm font-medium text-gray-900">Sizes & Prices:</h4>
+          
+          {priceEntries.length > 0 ? (
+            <div className="space-y-1">
+              {priceEntries.length >= 5 ? (
+                // For 5+ prices: First row 3 items, second row remaining items
+                <>
+                  <div className="grid grid-cols-3 gap-1 sm:gap-2">
+                    {priceEntries.slice(0, 3).map(([size, price]) => (
+                      <div
+                        key={size}
+                        className="bg-gray-50 hover:bg-red-50 px-1 sm:px-1.5 py-1.5 sm:py-2 rounded-lg text-xs transition-colors cursor-pointer border border-gray-100 hover:border-red-200"
+                      >
+                        <div className="font-medium text-gray-700 truncate text-xs">{size.toUpperCase()}</div>
+                        <div className="text-red-600 font-semibold truncate text-xs">{price}</div>
+                      </div>
+                    ))}
                   </div>
-                ) : null,
-              )
-            ) : (
-              <span className="text-gray-500 text-sm">Contact for pricing</span>
-            )}
-          </div>
+                  <div className="grid grid-cols-2 gap-1 sm:gap-2">
+                    {priceEntries.slice(3).map(([size, price]) => (
+                      <div
+                        key={size}
+                        className="bg-gray-50 hover:bg-red-50 px-1.5 sm:px-2 py-1.5 sm:py-2 rounded-lg text-xs transition-colors cursor-pointer border border-gray-100 hover:border-red-200"
+                      >
+                        <div className="font-medium text-gray-700 truncate text-xs">{size.toUpperCase()}</div>
+                        <div className="text-red-600 font-semibold truncate text-xs">{price}</div>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                // For 4 or fewer prices: Standard 2-column grid
+                <div className="grid grid-cols-2 gap-1 sm:gap-2">
+                  {priceEntries.map(([size, price]) => (
+                    <div
+                      key={size}
+                      className="bg-gray-50 hover:bg-red-50 px-1.5 sm:px-2 py-1.5 sm:py-2 rounded-lg text-xs transition-colors cursor-pointer border border-gray-100 hover:border-red-200"
+                    >
+                      <div className="font-medium text-gray-700 truncate text-xs">{size.toUpperCase()}</div>
+                      <div className="text-red-600 font-semibold truncate text-xs">{price}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="bg-gray-50 px-2 sm:px-3 py-2 rounded-lg text-center border border-gray-100">
+              <span className="text-gray-500 text-xs sm:text-sm">Contact for pricing</span>
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -143,16 +178,18 @@ const ProductCardSkeleton = memo(({ index = 0 }) => (
     }}
   >
     <div className="aspect-square bg-gray-200"></div>
-    <div className="p-6 flex-1 flex flex-col space-y-4">
-      <div className="space-y-2">
-        <div className="h-5 bg-gray-200 rounded w-3/4"></div>
-        <div className="h-4 bg-gray-200 rounded w-full"></div>
+    <div className="p-4 sm:p-6 flex-1 flex flex-col space-y-3 sm:space-y-4">
+      <div className="space-y-1 sm:space-y-2">
+        <div className="h-4 sm:h-5 bg-gray-200 rounded w-3/4"></div>
+        <div className="h-3 sm:h-4 bg-gray-200 rounded w-full"></div>
       </div>
-      <div className="mt-auto space-y-3">
-        <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-        <div className="flex flex-wrap gap-2">
-          <div className="h-8 bg-gray-200 rounded w-16"></div>
-          <div className="h-8 bg-gray-200 rounded w-16"></div>
+      <div className="mt-auto space-y-2 sm:space-y-3">
+        <div className="h-3 sm:h-4 bg-gray-200 rounded w-1/2"></div>
+        <div className="grid grid-cols-2 gap-1 sm:gap-2">
+          <div className="h-10 sm:h-12 bg-gray-200 rounded"></div>
+          <div className="h-10 sm:h-12 bg-gray-200 rounded"></div>
+          <div className="h-10 sm:h-12 bg-gray-200 rounded"></div>
+          <div className="h-10 sm:h-12 bg-gray-200 rounded"></div>
         </div>
       </div>
     </div>
@@ -250,8 +287,16 @@ export default function ProductCatalog() {
     const priceFields = priceFieldsMap[categoryName] || priceFieldsMap.default
 
     priceFields.forEach(({ display, field }) => {
-      if (product[field] && product[field].toString().trim() !== "") {
-        prices[display] = product[field]
+      const priceValue = product[field]
+      
+      // More robust checking for valid prices
+      if (priceValue !== null && 
+          priceValue !== undefined && 
+          priceValue !== "" && 
+          String(priceValue).trim() !== "" &&
+          String(priceValue).trim() !== "0" &&
+          String(priceValue).toLowerCase() !== "null") {
+        prices[display] = String(priceValue).trim()
       }
     })
 
@@ -606,7 +651,7 @@ export default function ProductCatalog() {
         )}
 
         {isLoading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
             {Array(8)
               .fill(0)
               .map((_, index) => (
@@ -619,9 +664,9 @@ export default function ProductCatalog() {
               {category.products.length > 0 && (
                 <div className="mb-8">
                   <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-                    <div className="bg-red-500 text-white px-8 py-4 flex items-center justify-between">
-                      <h3 className="text-2xl font-medium">{category.name}</h3>
-                      <span className="bg-white text-red-500 px-3 py-1 rounded-full text-sm font-medium">
+                    <div className="bg-red-500 text-white px-4 sm:px-8 py-4 flex items-center justify-between">
+                      <h3 className="text-lg sm:text-2xl font-medium">{category.name}</h3>
+                      <span className="bg-white text-red-500 px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium">
                         {category.products.length} products
                       </span>
                     </div>
@@ -629,7 +674,7 @@ export default function ProductCatalog() {
                 </div>
               )}
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
                 {category.products.slice(0, visibleProducts[category.id] || PRODUCTS_PER_PAGE).map((product, index) => (
                   <ProductCard key={product.id} product={product} categoryName={category.name} index={index} />
                 ))}
