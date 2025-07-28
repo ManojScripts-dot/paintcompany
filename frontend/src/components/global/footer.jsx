@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { ArrowUp, Facebook, MessageCircle} from "lucide-react"
 import { SiTiktok } from "react-icons/si";
-import logo from "../../assets/logo.png"
+import logo from "../../assets/logo.jpeg"
 
 const Footer = () => {
   const [scrollProgress, setScrollProgress] = useState(0)
@@ -13,11 +13,8 @@ const Footer = () => {
   }
 
   const handleNavigation = (section) => {
-    // Check if we're on the main page (home page)
     if (window.location.pathname === '/') {
-      // Navigate to section on the same page
       if (section === 'home') {
-        // For home section, scroll to top but leave space for navbar
         window.scrollTo({ 
           top: 0, 
           behavior: "smooth" 
@@ -29,7 +26,6 @@ const Footer = () => {
         }
       }
     } else {
-      // Navigate to home page with hash
       if (section === 'home') {
         window.location.href = '/'
       } else {
@@ -43,59 +39,91 @@ const Footer = () => {
   }
 
   useEffect(() => {
+    let animationId
+
     const handleScroll = () => {
-      const totalScroll = document.documentElement.scrollHeight - window.innerHeight
-      const currentScroll = window.scrollY
-      if (totalScroll) {
-        const percentage = (currentScroll / totalScroll) * 100
-        setScrollProgress(percentage)
+      if (animationId) {
+        cancelAnimationFrame(animationId)
       }
+
+      animationId = requestAnimationFrame(() => {
+        const totalScroll = document.documentElement.scrollHeight - window.innerHeight
+        const currentScroll = window.scrollY
+        
+        if (totalScroll > 0) {
+          const percentage = Math.min(Math.max((currentScroll / totalScroll) * 100, 0), 100)
+          setScrollProgress(percentage)
+        } else {
+          setScrollProgress(0)
+        }
+      })
     }
 
-    window.addEventListener("scroll", handleScroll)
+    window.addEventListener("scroll", handleScroll, { passive: true })
     handleScroll()
 
-    return () => window.removeEventListener("scroll", handleScroll)
+    return () => {
+      window.removeEventListener("scroll", handleScroll)
+      if (animationId) {
+        cancelAnimationFrame(animationId)
+      }
+    }
   }, [])
 
-  const radius = 20
+  // Optimized calculations
+  const radius = 40
   const circumference = 2 * Math.PI * radius
-  const dashOffset = circumference - (scrollProgress / 100) * circumference
+  const offset = circumference - (scrollProgress / 100) * circumference
 
   const getProgressColor = (progress) => {
-    if (progress <= 33) return "#22c55e"
-    if (progress <= 66) return "#eab308"
+    if (progress <= 33) return "purple"
+    if (progress <= 66) return "#bdb4a7"
     return "#ef4444"
   }
 
   return (
     <>
-      {/* Scroll to Top Button */}
-      <div className="fixed bottom-6 right-6 z-50">
-        <div className="relative h-12 w-12 cursor-pointer group" onClick={scrollToTop}>
-          <svg className="h-full w-full transform -rotate-90" viewBox="0 0 50 50">
-            <circle cx="25" cy="25" r={radius} fill="none" stroke="#e5e7eb" strokeWidth="3" />
+      {/* Scroll to Top Button - Updated Design */}
+      <div className="fixed bottom-4 sm:bottom-6 right-4 sm:right-6 z-50">
+        <div className="relative h-[50px] w-[50px] sm:h-[60px] sm:w-[60px] cursor-pointer group" onClick={scrollToTop}>
+          <svg className="h-full w-full" viewBox="0 0 100 100">
+            {/* Background Circle */}
+            <circle 
+              cx="50" 
+              cy="50" 
+              r={radius} 
+              fill="none" 
+              stroke="#e5e7eb" 
+              strokeWidth="8" 
+            />
+            {/* Progress Circle */}
             <circle
-              cx="25"
-              cy="25"
+              cx="50"
+              cy="50"
               r={radius}
               fill="none"
               stroke={getProgressColor(scrollProgress)}
-              strokeWidth="3"
+              strokeWidth="8"
               strokeLinecap="round"
               strokeDasharray={circumference}
-              strokeDashoffset={dashOffset}
-              className="transition-all duration-300"
+              strokeDashoffset={offset}
+              transform="rotate(-90 50 50)"
+              style={{
+                transition: 'stroke-dashoffset 0.1s ease-out, stroke 0.3s ease',
+              }}
             />
+            {/* Arrow Icon using foreignObject */}
+            <foreignObject x="25" y="25" width="50" height="50">
+              <div className="flex h-full w-full items-center justify-center bg-white rounded-full shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-300">
+                <ArrowUp className="w-4 h-4 sm:w-5 sm:h-5 text-gray-700 group-hover:text-red-500 transition-colors duration-300" />
+              </div>
+            </foreignObject>
           </svg>
-          <div className="absolute inset-0 flex items-center justify-center bg-white rounded-full shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-300">
-            <ArrowUp className="w-5 h-5 text-gray-700 group-hover:text-red-500 transition-colors duration-300" />
-          </div>
         </div>
       </div>
 
       {/* Footer */}
-      <footer className="bg-gray-600 text-white">
+      <footer className="bg-gray-900 text-white">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 py-16">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {/* Company Info */}
@@ -104,7 +132,7 @@ const Footer = () => {
                 <img
                   src={logo}
                   alt="Paint Company Logo"
-                  className="h-28 w-auto mb-4"
+                  className="h-24 w-auto mb-4"
                 />
                 <p className="text-gray-300 font-light leading-relaxed">
                   Transforming spaces with premium quality paints and exceptional service for over 7 years.
