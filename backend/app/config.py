@@ -46,7 +46,7 @@ class Settings:
         "http://127.0.0.1:5173",
         "http://127.0.0.1:5174",
         "https://paintcompany.vercel.app",
-        "https://paintcompanybackend.onrender.com",
+        "https://paintcompany-kakr.onrender.com/",
         "https://paintcompany.shresthamanoj.info.np",
         "https://www.paintcompany.shresthamanoj.info.np",
         "http://paintcompany.shresthamanoj.info.np",
