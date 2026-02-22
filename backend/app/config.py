@@ -37,29 +37,47 @@ class Settings:
     CLOUDINARY_API_SECRET: str = os.getenv("CLOUDINARY_API_SECRET", "")
     USE_CLOUDINARY: bool = os.getenv("USE_CLOUDINARY", "false").lower() == "true"
     
-    # CORS
-    CORS_ORIGINS: list = [
-        "http://localhost:3000",  # React frontend
-        "http://localhost:5173",  # Vite development server
-        "http://localhost:5174",  # Admin panel (if on different port)
+    # CORS - deployment-ready: env CORS_ORIGINS (comma-separated) is merged with defaults
+    _DEFAULT_CORS_ORIGINS: list = [
+        "http://localhost:3000",
+        "http://localhost:5173",
+        "http://localhost:5174",
         "http://127.0.0.1:3000",
         "http://127.0.0.1:5173",
         "http://127.0.0.1:5174",
-        "https://paintcompany.vercel.app",  # Your Vercel frontend
-        "https://paintcompanybackend.onrender.com",  # Your Render backend (for docs)
+        "https://paintcompany.vercel.app",
+        "https://paintcompanybackend.onrender.com",
         "https://paintcompany.shresthamanoj.info.np",
-        "https://www.paintcompany.shresthamanoj.info.np",  # Allow all Vercel preview deployments
+        "https://www.paintcompany.shresthamanoj.info.np",
+        "http://paintcompany.shresthamanoj.info.np",
+        "http://www.paintcompany.shresthamanoj.info.np",
     ]
-    
-    # Static files (kept for backward compatibility)
-    STATIC_DIR: str = "static"
-    UPLOAD_DIR: str = os.path.join(STATIC_DIR, "uploads")
-    POPULAR_PRODUCTS_DIR: str = os.path.join(UPLOAD_DIR, "popular_products")
-    NEW_ARRIVALS_DIR: str = os.path.join(UPLOAD_DIR, "new_arrivals")
-    PRODUCTS_DIR: str = os.path.join(UPLOAD_DIR, "products") 
-    MAX_IMAGE_SIZE: int = 5 * 1024 * 1024  # 5MB
-    
-    # Logging
-    LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO")
+    # Any subdomain of shresthamanoj.info.np (so CORS never blocks your domain)
+    CORS_ORIGIN_REGEX: str = r"^https?://([a-zA-Z0-9-]+\.)*shresthamanoj\.info\.np$"
+
+
+def _build_cors_origins() -> list:
+    default = list(Settings._DEFAULT_CORS_ORIGINS)
+    extra = os.getenv("CORS_ORIGINS", "")
+    if extra:
+        for origin in extra.split(","):
+            origin = origin.strip()
+            if origin and origin not in default:
+                default.append(origin)
+    return default
+
+
+# Apply CORS_ORIGINS after Settings is defined
+Settings.CORS_ORIGINS = _build_cors_origins()
+
+
+# Static files (kept for backward compatibility) - must be on Settings
+Settings.STATIC_DIR = "static"
+Settings.UPLOAD_DIR = os.path.join(Settings.STATIC_DIR, "uploads")
+Settings.POPULAR_PRODUCTS_DIR = os.path.join(Settings.UPLOAD_DIR, "popular_products")
+Settings.NEW_ARRIVALS_DIR = os.path.join(Settings.UPLOAD_DIR, "new_arrivals")
+Settings.PRODUCTS_DIR = os.path.join(Settings.UPLOAD_DIR, "products")
+Settings.MAX_IMAGE_SIZE = 5 * 1024 * 1024  # 5MB
+Settings.LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
 
 settings = Settings()

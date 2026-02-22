@@ -104,10 +104,11 @@ async def log_requests(request: Request, call_next):
     
     return response
 
-# Add CORS middleware with enhanced settings
+# Add CORS middleware - deployment-ready: no CORS block for allowed origins
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.CORS_ORIGINS,
+    allow_origin_regex=settings.CORS_ORIGIN_REGEX,
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=[
