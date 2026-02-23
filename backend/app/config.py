@@ -2,8 +2,12 @@
 import os
 from dotenv import load_dotenv
 
-# Load environment variables from .env file
+# Load environment variables: .env first, then backend-specific file if present
 load_dotenv()
+_backend_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+_env_file = os.path.join(_backend_dir, "paintcompanybackend.env")
+if os.path.isfile(_env_file):
+    load_dotenv(_env_file)
 
 class Settings:
     PROJECT_NAME: str = "Paint Website API"
@@ -46,7 +50,7 @@ class Settings:
         "http://127.0.0.1:5173",
         "http://127.0.0.1:5174",
         "https://paintcompany.vercel.app",
-        "https://paintcompany-kakr.onrender.com/",
+        "https://paintcompany-kakr.onrender.com",
         "https://paintcompany.shresthamanoj.info.np",
         "https://www.paintcompany.shresthamanoj.info.np",
         "http://paintcompany.shresthamanoj.info.np",

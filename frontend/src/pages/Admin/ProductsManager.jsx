@@ -317,7 +317,7 @@ export default function ProductsManager() {
     image_url: "",
   });
 
-  const API_BASE_URL = import.meta.env.VITE_API_URL || "https://paintcompanybackend.onrender.com";
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000";
   const token = localStorage.getItem("authToken");
 
   const getImageUrl = (imageUrl) => {

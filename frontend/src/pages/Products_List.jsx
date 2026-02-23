@@ -213,7 +213,7 @@ export default function ProductCatalog() {
   const [sortOption, setSortOption] = useState("newest")
   const [isFilterOpen, setIsFilterOpen] = useState(false)
 
-  const API_BASE_URL = "https://paintcompanybackend.onrender.com"
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000";
   const PRODUCTS_PER_PAGE = 8
   const categoryOrder = [
     "Primer",

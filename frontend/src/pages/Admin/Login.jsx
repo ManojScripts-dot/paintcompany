@@ -11,12 +11,14 @@ export default function Login() {
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+
   const [isResetModalOpen, setIsResetModalOpen] = useState(false)
   const [resetCurrentPassword, setResetCurrentPassword] = useState("")
   const [resetNewPassword, setResetNewPassword] = useState("")
   const [resetVerifyPassword, setResetVerifyPassword] = useState("")
   const [resetError, setResetError] = useState("")
   const [isResetLoading, setIsResetLoading] = useState(false)
+
   const [isForgotModalOpen, setIsForgotModalOpen] = useState(false)
   const [forgotUsername, setForgotUsername] = useState("")
   const [forgotNewPassword, setForgotNewPassword] = useState("")
@@ -34,7 +36,7 @@ export default function Login() {
   const [showForgotVerifyPassword, setShowForgotVerifyPassword] = useState(false)
   const [showSuperadminKey, setShowSuperadminKey] = useState(false)
 
-  // State for SaveModal
+  // SaveModal
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false)
   const [saveModalTitle, setSaveModalTitle] = useState("")
   const [saveModalMessage, setSaveModalMessage] = useState("")
@@ -42,7 +44,8 @@ export default function Login() {
 
   const navigate = useNavigate()
 
-  const API_BASE_URL = "https://paintcompanybackend.onrender.com"
+  // ✅ Uses .env (Vite) for dev/prod switching
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000"
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -50,29 +53,32 @@ export default function Login() {
     setIsLoading(true)
 
     try {
-      const formData = new FormData()
-      formData.append("username", username)
-      formData.append("password", password)
+      // ✅ FastAPI OAuth2PasswordRequestForm expects x-www-form-urlencoded
+      const body = new URLSearchParams()
+      body.append("username", username)
+      body.append("password", password)
 
-      const response = await axios.post(`${API_BASE_URL}/auth/login`, formData, {
+      const response = await axios.post(`${API_BASE_URL}/auth/login`, body, {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
         },
       })
 
-      if (response.data && response.data.access_token) {
+      if (response.data?.access_token) {
         localStorage.setItem("authToken", response.data.access_token)
         localStorage.setItem(
           "adminAuth",
           JSON.stringify({
             isAuthenticated: true,
             user: { username, role: "admin" },
-          }),
+          })
         )
+
         setSaveModalTitle("Login Complete")
         setSaveModalMessage("Login successful! Redirecting to dashboard...")
         setSaveModalTimerMessage("Redirecting in")
         setIsSaveModalOpen(true)
+
         setTimeout(() => {
           navigate("/admin/dashboard")
         }, 1000)
@@ -84,7 +90,7 @@ export default function Login() {
         if (err.response.status === 401) {
           setError("Invalid username or password")
         } else {
-          setError(`Server error: ${err.response.data.detail || "Unknown error"}`)
+          setError(`Server error: ${err.response.data?.detail || "Unknown error"}`)
         }
       } else if (err.request) {
         setError("No response from server. Please check your connection.")
@@ -116,7 +122,6 @@ export default function Login() {
 
     try {
       const authToken = localStorage.getItem("authToken")
-
       if (!authToken) {
         setResetError("You must be logged in to reset your password")
         setIsResetLoading(false)
@@ -134,7 +139,7 @@ export default function Login() {
             "Content-Type": "application/json",
             Authorization: `Bearer ${authToken}`,
           },
-        },
+        }
       )
 
       if (response.status === 200) {
@@ -142,6 +147,7 @@ export default function Login() {
         setResetCurrentPassword("")
         setResetNewPassword("")
         setResetVerifyPassword("")
+
         setSaveModalTitle("Password Updated")
         setSaveModalMessage("Password reset successfully!")
         setSaveModalTimerMessage("Closing in")
@@ -151,7 +157,7 @@ export default function Login() {
       }
     } catch (err) {
       if (err.response) {
-        setResetError(err.response.data.detail || "Failed to reset password")
+        setResetError(err.response.data?.detail || "Failed to reset password")
       } else if (err.request) {
         setResetError("No response from server. Please check your connection.")
       } else {
@@ -192,7 +198,7 @@ export default function Login() {
           headers: {
             "Content-Type": "application/json",
           },
-        },
+        }
       )
 
       if (response.status === 200) {
@@ -201,6 +207,7 @@ export default function Login() {
         setForgotNewPassword("")
         setForgotVerifyPassword("")
         setSuperadminKey("")
+
         setSaveModalTitle("Password Recovered")
         setSaveModalMessage("Password reset successfully!")
         setSaveModalTimerMessage("Closing in")
@@ -210,7 +217,7 @@ export default function Login() {
       }
     } catch (err) {
       if (err.response) {
-        setForgotError(err.response.data.detail || "Failed to reset password")
+        setForgotError(err.response.data?.detail || "Failed to reset password")
       } else if (err.request) {
         setForgotError("No response from server. Please check your connection.")
       } else {
@@ -258,7 +265,9 @@ export default function Login() {
           </div>
 
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm">{error}</div>
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm">
+              {error}
+            </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
