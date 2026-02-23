@@ -1,8 +1,10 @@
 # app/auth/utils.py
 from datetime import datetime, timedelta
 from typing import Optional, Dict
+
 from jose import jwt
 from passlib.context import CryptContext
+
 from app.config import settings
 from app.database import DatabaseConnection
 from app.models.schemas import AdminUserInDB
@@ -10,8 +12,8 @@ from app.models.schemas import AdminUserInDB
 BCRYPT_MAX_BYTES = 72
 
 # IMPORTANT:
-# - "bcrypt" supports existing hashes in your DB.
-# - "bcrypt_sha256" becomes the default for NEW hashes (safe for long passwords).
+# - Supports existing bcrypt hashes already in DB.
+# - bcrypt_sha256 is preferred for NEW hashes.
 pwd_context = CryptContext(
     schemes=["bcrypt_sha256", "bcrypt"],
     deprecated="auto",
@@ -42,31 +44,33 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     """
     Verify password against hash.
 
-    Strategy:
-    1) Try normal verify (works for normal length passwords + bcrypt_sha256 hashes)
-    2) If bcrypt backend throws 72-byte error, retry with 72-byte truncation
-       (matches bcrypt's real behavior: it uses only first 72 bytes anyway)
+    Render (and some bcrypt backends) raise:
+      ValueError: password cannot be longer than 72 bytes
+
+    bcrypt and bcrypt_sha256 both ultimately use bcrypt internally,
+    so we proactively truncate to 72 bytes *only for bcrypt-based hashes*.
     """
-    try:
-        return pwd_context.verify(plain_password, hashed_password)
-    except ValueError as e:
-        # This is the Render crash you saw:
-        # "password cannot be longer than 72 bytes"
-        msg = str(e).lower()
-        if "longer than 72" in msg or "72 bytes" in msg:
-            safe_pw = _truncate_to_72_bytes(plain_password)
-            return pwd_context.verify(safe_pw, hashed_password)
-        raise
+    if plain_password is None:
+        plain_password = ""
+    if not hashed_password:
+        return False
+
+    # bcrypt hashes: $2a$, $2b$, $2y$
+    # bcrypt_sha256 hashes: $bcrypt-sha256$
+    if hashed_password.startswith(("$2a$", "$2b$", "$2y$", "$bcrypt-sha256$")):
+        plain_password = _truncate_to_72_bytes(plain_password)
+
+    return pwd_context.verify(plain_password, hashed_password)
 
 
 def get_password_hash(password: str) -> str:
     """
     Create password hash.
-
-    Because bcrypt_sha256 is the first scheme, new hashes will be bcrypt_sha256,
-    which never crashes due to length.
+    Since bcrypt_sha256 is first, new hashes will default to bcrypt_sha256.
     """
-    return pwd_context.hash(password)
+    if password is None:
+        password = ""
+    return pwd_context.hash(str(password))
 
 
 def create_access_token(data: Dict, expires_delta: Optional[timedelta] = None) -> str:
